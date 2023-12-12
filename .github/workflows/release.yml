@@ -88,7 +88,7 @@ jobs:
 
       - name: Show workflow information 
         run: |
-          export _NAME=$(jq ".[\"$GOOS-$GOARCH$GOAMD64\"].friendlyName" -r < .github/build/friendly-filenames.json)
+          export _NAME="$GOOS-$GOARCH$GOAMD64"
           echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
