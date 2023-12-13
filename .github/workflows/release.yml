@@ -74,14 +74,6 @@ jobs:
           # BEGIN NetBSD ARM64
           - goos: netbsd
             goarch: arm64
-          # BEGIN MIPS64/LE
-          - goos: linux
-            goarch: mips64
-            gomips64: softfloat
-          - goos: linux
-            goarch: mips64le
-            gomips64: softfloat
-          # END MIPS64/LE
           # BEGIN PPC64
           - goos: aix
             goarch: ppc64
