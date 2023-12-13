@@ -66,6 +66,9 @@ jobs:
           - goos: aix
             goarch: ppc64
             goppc64: power9
+          - goos: aix
+            goarch: ppc64
+            goppc64: power10
           # END AIX
           # BEGIN FreeBSD RISCV64
           - goos: freebsd
@@ -85,6 +88,12 @@ jobs:
           - goos: linux
             goarch: ppc64le
             goppc64: power9
+          - goos: linux
+            goarch: ppc64
+            goppc64: power10
+          - goos: linux
+            goarch: ppc64le
+            goppc64: power10
       fail-fast: false
 
     runs-on: ubuntu-latest
@@ -123,11 +132,6 @@ jobs:
           fi
           sed -i '/build/ s/Custom/'$ID'/' ./core/core.go
 
-      - name: Open CGO for iOS
-        if: matrix.goos == 'ios'
-        run: |
-          CGO_ENABLED=1
- 
       - name: Build Xray
         run: |
           mkdir -p build_assets
