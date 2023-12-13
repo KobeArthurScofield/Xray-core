@@ -85,6 +85,12 @@ jobs:
           - goos: linux
             goarch: ppc64
             goppc64: power9
+          - goos: linux
+            goarch: ppc64le
+            goppc64: power9
+          - goos: linux
+            goarch: ppc64le
+            goppc64: power9
       fail-fast: false
 
     runs-on: ubuntu-latest
