@@ -62,6 +62,10 @@ jobs:
           # BEIGIN AIX
           - goos: aix
             goarch: ppc64
+            goppc64: power8
+          - goos: aix
+            goarch: ppc64
+            goppc64: power9
           # END AIX
           # BEGIN FreeBSD RISCV64
           - goos: freebsd
@@ -74,10 +78,7 @@ jobs:
           # BEGIN NetBSD ARM64
           - goos: netbsd
             goarch: arm64
-          # BEGIN PPC64
-          - goos: aix
-            goarch: ppc64
-            goppc64: power9
+          # BEGIN Linux PPC
           - goos: linux
             goarch: ppc64
             goppc64: power9
@@ -91,7 +92,6 @@ jobs:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
       GOAMD64: ${{ matrix.goamd64 }}
-      GOMIPS64: ${{ matrix.gomips64 }}
       GOPPC64: ${{ matrix.goppc64 }}
       CGO_ENABLED: 0
     steps:
@@ -100,8 +100,8 @@ jobs:
 
       - name: Show workflow information 
         run: |
-          export _NAME="$GOOS-$GOARCH-$GOAMD64$GOMIPS64$GOPPC64"
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, GOMIPS64: $GOMIPS64, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
+          export _NAME="$GOOS-$GOARCH-$GOAMD64$GOPPC64"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go
