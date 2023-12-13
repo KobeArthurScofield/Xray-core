@@ -122,6 +122,11 @@ jobs:
             ID=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
           fi
           sed -i '/build/ s/Custom/'$ID'/' ./core/core.go
+
+      - name: Open CGO for iOS
+        if: matrix.goos == 'ios'
+        run: |
+          CGO_ENABLED=1
  
       - name: Build Xray
         run: |
