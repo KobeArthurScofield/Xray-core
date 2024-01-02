@@ -57,7 +57,7 @@ jobs:
         # Include amd64 on all platforms.
         goos: [windows, freebsd, openbsd, linux, darwin]
         goarch: [amd64]
-        goamd64: [v2, v3]
+        goamd64: [v2, v3, v4]
       fail-fast: false
 
     runs-on: ubuntu-latest
