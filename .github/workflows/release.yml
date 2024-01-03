@@ -122,20 +122,11 @@ jobs:
       - name: Get project dependencies
         run: go mod download
       
-      - name: Replace Custom to Commit ID
-        if: github.event_name != 'release'
-        run: |
-          ID=$(git rev-parse --short ${{ github.sha }})
-          if [ "${{ github.event_name }}" == 'pull_request' ]
-          then
-            ID=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
-          fi
-          sed -i '/build/ s/Custom/'$ID'/' ./core/core.go
-
       - name: Build Xray
         run: |
           mkdir -p build_assets
-          go build -v -o build_assets/xray -trimpath -ldflags "-s -w -buildid=" ./main
+          make
+          find . -maxdepth 1 -type f -regex '.*\(wxray\|xray\|xray_softfloat\)\(\|.exe\)' -exec mv {} ./build_assets/ \;
 
       - name: Restore Cache
         uses: actions/cache/restore@v3
