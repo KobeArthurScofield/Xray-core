@@ -4,21 +4,6 @@ on:
   workflow_dispatch:
   release:
     types: [published]
-  push:
-    branches:
-      - main
-    paths:
-      - "**/*.go"
-      - "go.mod"
-      - "go.sum"
-      - ".github/workflows/*.yml"
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - "**/*.go"
-      - "go.mod"
-      - "go.sum"
-      - ".github/workflows/*.yml"
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -70,89 +55,53 @@ jobs:
     strategy:
       matrix:
         # Include amd64 on all platforms.
-        goos: [windows, freebsd, openbsd, linux, darwin]
-        goarch: [amd64, 386]
-        exclude:
-          # Exclude i386 on darwin
-          - goarch: 386
-            goos: darwin
+        goos: [android, dragonfly, illumos, ios, netbsd, plan9, solaris]
+        goarch: [amd64]
+        goamd64: [v1, v2, v3, v4]
         include:
-          # BEIGIN MacOS ARM64
-          - goos: darwin
-            goarch: arm64
-          # END MacOS ARM64
-          # BEGIN Linux ARM 5 6 7
-          - goos: linux
-            goarch: arm
-            goarm: 7
-          - goos: linux
-            goarch: arm
-            goarm: 6
-          - goos: linux
-            goarch: arm
-            goarm: 5
-          # END Linux ARM 5 6 7
-          # BEGIN Android ARM 8
-          - goos: android
-            goarch: arm64
-          # END Android ARM 8
-          # Windows ARM
-          - goos: windows
-            goarch: arm64
-          - goos: windows
-            goarch: arm
-            goarm: 7
-          # BEGIN Other architectures
-          # BEGIN riscv64 & ARM64 & LOONG64
-          - goos: linux
-            goarch: arm64
-          - goos: linux
+          # BEIGIN AIX
+          - goos: aix
+            goarch: ppc64
+            goppc64: power8
+          - goos: aix
+            goarch: ppc64
+            goppc64: power9
+          - goos: aix
+            goarch: ppc64
+            goppc64: power10
+          # END AIX
+          # BEGIN FreeBSD RISCV64
+          - goos: freebsd
             goarch: riscv64
-          - goos: linux
-            goarch: loong64
-          # END riscv64 & ARM64 & LOONG64
-          # BEGIN MIPS
-          - goos: linux
-            goarch: mips64
-          - goos: linux
-            goarch: mips64le
-          - goos: linux
-            goarch: mipsle
-          - goos: linux
-            goarch: mips
-          # END MIPS
-          # BEGIN PPC
+          # END FreeBSD RISCV64
+          # BEGIN IOS ARM64
+          - goos: ios
+            goarch: arm64
+          # END IOS ARM64
+          # BEGIN NetBSD ARM64
+          - goos: netbsd
+            goarch: arm64
+          # BEGIN Linux PPC
           - goos: linux
             goarch: ppc64
+            goppc64: power9
           - goos: linux
             goarch: ppc64le
-          # END PPC
-          # BEGIN FreeBSD ARM
-          - goos: freebsd
-            goarch: arm64
-          - goos: freebsd
-            goarch: arm
-            goarm: 7
-          # END FreeBSD ARM
-          # BEGIN S390X
+            goppc64: power9
           - goos: linux
-            goarch: s390x
-          # END S390X
-          # END Other architectures
-          # BEGIN OPENBSD ARM
-          - goos: openbsd
-            goarch: arm64
-          - goos: openbsd
-            goarch: arm
-            goarm: 7
-          # END OPENBSD ARM
+            goarch: ppc64
+            goppc64: power10
+          - goos: linux
+            goarch: ppc64le
+            goppc64: power10
       fail-fast: false
 
     runs-on: ubuntu-latest
     env:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
-      GOARM: ${{ matrix.goarm }}
+      GOAMD64: ${{ matrix.goamd64 }}
+      GOPPC64: ${{ matrix.goppc64 }}
       CGO_ENABLED: 0
     steps:
       - name: Checkout codebase
@@ -160,8 +109,8 @@ jobs:
 
       - name: Show workflow information 
         run: |
-          export _NAME=$(jq ".[\"$GOOS-$GOARCH$GOARM$GOMIPS\"].friendlyName" -r < .github/build/friendly-filenames.json)
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOARM: $GOARM, GOMIPS: $GOMIPS, RELEASE_NAME: $_NAME"
+          export _NAME="$GOOS-$GOARCH-$GOAMD64$GOPPC64"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go
