@@ -94,6 +94,16 @@ jobs:
           - goos: linux
             goarch: ppc64le
             goppc64: power10
+          # BEGIN OpenBSD PPC
+          - goos: openbsd
+            goarch: ppc64
+            goppc64: power8
+          - goos: openbsd
+            goarch: ppc64
+            goppc64: power9
+          - goos: openbsd
+            goarch: ppc64
+            goppc64: power10
       fail-fast: false
 
     runs-on: ubuntu-latest
