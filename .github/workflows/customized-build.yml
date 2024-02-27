@@ -127,7 +127,7 @@ jobs:
       GOARCH: ${{ matrix.goarch }}
       GOAMD64: ${{ matrix.goamd64 }}
       GOPPC64: ${{ matrix.goppc64 }}
-      CGO_ENABLED: 1
+      CGO_ENABLED: 0
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v4
