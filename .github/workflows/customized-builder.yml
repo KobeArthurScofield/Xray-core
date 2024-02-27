@@ -1,24 +1,9 @@
-name: Customized MISC Binary Build
+name: Customized MISC Binaries Release
 
 on:
   workflow_dispatch:
   release:
     types: [published]
-  push:
-    branches:
-      - main
-    paths:
-      - "**/*.go"
-      - "go.mod"
-      - "go.sum"
-      - ".github/workflows/*.yml"
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - "**/*.go"
-      - "go.mod"
-      - "go.sum"
-      - ".github/workflows/*.yml"
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -70,7 +55,7 @@ jobs:
     strategy:
       matrix:
         # Include amd64 on all platforms.
-        goos: [android, dragonfly, illumos, ios, netbsd, plan9, solaris]
+        goos: [dragonfly, illumos, netbsd, plan9, solaris]
         goarch: [amd64]
         goamd64: [v1, v2, v3, v4]
         include:
@@ -89,13 +74,6 @@ jobs:
           - goos: freebsd
             goarch: riscv64
           # END FreeBSD RISCV64
-          # BEGIN IOS ARM64
-          - goos: ios
-            goarch: arm64
-          # END IOS ARM64
-          # BEGIN NetBSD ARM64
-          - goos: netbsd
-            goarch: arm64
           # BEGIN Linux PPC
           - goos: linux
             goarch: ppc64
@@ -109,6 +87,10 @@ jobs:
           - goos: linux
             goarch: ppc64le
             goppc64: power10
+          # END Linux PPC
+          # BEGIN NetBSD ARM64
+          - goos: netbsd
+            goarch: arm64
           # BEGIN OpenBSD PPC
           - goos: openbsd
             goarch: ppc64
@@ -136,7 +118,7 @@ jobs:
 
       - name: Show workflow information 
         run: |
-          export _NAME="$GOOS-$GOARCH-$GOAMD64$GOPPC64"
+          export _NAME="$GOOS-$GOARCH$GOAMD64$GOPPC64"
           echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
