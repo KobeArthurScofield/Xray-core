@@ -1,4 +1,4 @@
-name: Customized MISC Binaries Release
+name: Customized Testing Binaries Release
 
 on:
   workflow_dispatch:
@@ -74,20 +74,6 @@ jobs:
           - goos: freebsd
             goarch: riscv64
           # END FreeBSD RISCV64
-          # BEGIN Linux PPC
-          - goos: linux
-            goarch: ppc64
-            goppc64: power9
-          - goos: linux
-            goarch: ppc64le
-            goppc64: power9
-          - goos: linux
-            goarch: ppc64
-            goppc64: power10
-          - goos: linux
-            goarch: ppc64le
-            goppc64: power10
-          # END Linux PPC
           # BEGIN NetBSD ARM64
           - goos: netbsd
             goarch: arm64
