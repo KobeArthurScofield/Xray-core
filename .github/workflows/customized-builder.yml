@@ -1,4 +1,4 @@
-name: Customized AMD64 Binaries Release
+name: Customized Enhanced Binaries Release
 
 on:
   workflow_dispatch:
@@ -58,6 +58,21 @@ jobs:
         goos: [windows, freebsd, openbsd, linux, darwin]
         goarch: [amd64]
         goamd64: [v2, v3, v4]
+        include:
+          # BEGIN Linux PPC
+          - goos: linux
+            goarch: ppc64
+            goppc64: power9
+          - goos: linux
+            goarch: ppc64le
+            goppc64: power9
+          - goos: linux
+            goarch: ppc64
+            goppc64: power10
+          - goos: linux
+            goarch: ppc64le
+            goppc64: power10
+          # END Linux PPC
       fail-fast: false
 
     runs-on: ubuntu-latest
