@@ -80,6 +80,7 @@ jobs:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
       GOAMD64: ${{ matrix.goamd64 }}
+      GOPPC64: ${{ matrix.goppc64 }}
       CGO_ENABLED: 0
     steps:
       - name: Checkout codebase
@@ -89,8 +90,8 @@ jobs:
 
       - name: Show workflow information 
         run: |
-          export _NAME="$GOOS-$GOARCH$GOAMD64"
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64:$GOAMD64, RELEASE_NAME: $_NAME"
+          export _NAME="$GOOS-$GOARCH$GOAMD64$GOPPC64"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64:$GOAMD64, GOPPC64:$GOPPC64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go
