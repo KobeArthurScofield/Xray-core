@@ -58,6 +58,9 @@ jobs:
         goos: [dragonfly, illumos, netbsd, plan9, solaris]
         goarch: [amd64]
         goamd64: [v1, v2, v3, v4]
+        gotoolchain: [""]
+        patch-assetname: [""]
+
         include:
           # BEIGIN AIX
           - goos: aix
@@ -102,8 +105,10 @@ jobs:
         with:
           ref: main
 
-      - name: Show workflow information 
+      - name: Show workflow information
         run: |
+          _NAME=${{ matrix.patch-assetname }}
+          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOAMD64$GOPPC64"
           export _NAME="$GOOS-$GOARCH$GOAMD64$GOPPC64"
           echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
@@ -111,7 +116,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version: ${{ matrix.gotoolchain || '1.22' }}
           check-latest: true
 
       - name: Get project dependencies
