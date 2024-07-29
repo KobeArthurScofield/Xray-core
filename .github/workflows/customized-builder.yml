@@ -103,7 +103,7 @@ jobs:
       - name: Checkout codebase
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: 70383c5
 
       - name: Show workflow information
         run: |
