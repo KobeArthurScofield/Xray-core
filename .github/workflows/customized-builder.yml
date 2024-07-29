@@ -89,7 +89,7 @@ jobs:
       - name: Checkout codebase
         uses: actions/checkout@v4
         with:
-          ref: 70383c5
+          ref: 70383c50ccbbb0168260db157a5d4771d0afbef2
 
       - name: Show workflow information
         run: |
