@@ -1,4 +1,4 @@
-name: Enhanced Builder for other architecture
+name: Enhanced Builder for PPC64/PPC64LE architecture
 
 on:
   workflow_dispatch:
@@ -8,34 +8,27 @@ on:
     branches:
       - builder-enhance
     paths:
-      - ".github/workflows/builder-enh-others.yml"
+      - ".github/workflows/builder-enh-ppc64.yml"
 jobs:
   build:
     permissions:
       contents: write
     strategy:
       matrix:
-        include:
-          # BEGIN ARM64 Specified
-          - goos: darwin
-            goarch: arm64
-            goarm64: v8.5,lse,crypto
-          - goos: darwin
-            goarch: arm64
-            goarm64: v8.6,lse,crypto
-          - goos: windows
-            goarch: arm64
-            goarm64: v8.7,lse,crypto
-          # END ARM64 Specified
+        goos: [windows, freebsd, openbsd, linux, darwin]
+        goarch: [ppc64, ppc64le]
+        goppc64: [power9, power10]
+      exclude:
+        - goos: windows
+        - goos: freebsd
+        - goos: openbsd
+        - goos: darwin
       fail-fast: false
 
     runs-on: ubuntu-latest
     env:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
-      GOAMD64: ${{ matrix.goamd64 }}
-      GOARM64: ${{ matrix.goarm64 }}
-      GORISCV64: ${{ matrix.goriscv64 }}
       GOPPC64: ${{ matrix.goppc64 }}
       CGO_ENABLED: 0
     steps:
@@ -46,8 +39,8 @@ jobs:
 
       - name: Show workflow information
         run: |
-          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOAMD64$GOARM64$GORISCV64$GOPPC64"
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, GOARM64: $GOARM64, GORISCV64: $GORISCV64, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
+          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOPPC64"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go
