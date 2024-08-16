@@ -1,0 +1,103 @@
+name: Test Builder for PPC64/PPC64LE architecture
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+  push:
+    branches:
+      - builder-testing
+    paths:
+      - ".github/workflows/builder-misc-ppc64.yml"
+jobs:
+  build:
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        goos: [dragonfly, illumos, netbsd, plan9, solaris, aix]
+        goarch: [ppc64, ppc64le]
+        goppc64: [power8, power9, power10]
+        exclude:
+          - goos: dragonfly
+          - goos: illumos
+          - goos: netbsd
+          - goos: plan9
+          - goos: solaris
+          - goos: aix
+            goarch: ppc64le
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    env:
+      GOOS: ${{ matrix.goos }}
+      GOARCH: ${{ matrix.goarch }}
+      GOPPC64: ${{ matrix.goppc64 }}
+      CGO_ENABLED: 0
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Show workflow information
+        run: |
+          _NAME=${{ matrix.patch-assetname }}
+          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOPPC64"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
+          echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+          check-latest: true
+
+      - name: Get project dependencies
+        run: go mod download
+      
+      - name: Build Xray
+        run: |
+          mkdir -p build_assets
+          make
+          find . -maxdepth 1 -type f -regex './\(wxray\|xray\|xray_softfloat\)\(\|.exe\)' -exec mv {} ./build_assets/ \;
+
+      - name: Copy README.md & LICENSE
+        run: |
+          cp ${GITHUB_WORKSPACE}/README.md ./build_assets/README.md
+          cp ${GITHUB_WORKSPACE}/LICENSE ./build_assets/LICENSE
+
+      - name: Create ZIP archive
+        if: github.event_name == 'release'
+        shell: bash
+        run: |
+          pushd build_assets || exit 1
+          touch -mt $(date +%Y01010000) *
+          zip -9vr ../Xray-${{ env.ASSET_NAME }}.zip .
+          popd || exit 1
+          FILE=./Xray-${{ env.ASSET_NAME }}.zip
+          DGST=$FILE.dgst
+          for METHOD in {"sha256","sha512"}
+          do
+            openssl dgst -$METHOD $FILE | sed 's/([^)]*)//g' >>$DGST
+          done
+
+      - name: Change the name
+        run: |
+          mv build_assets Xray-${{ env.ASSET_NAME }}
+
+      - name: Upload files to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Xray-${{ env.ASSET_NAME }}
+          path: |
+            ./Xray-${{ env.ASSET_NAME }}/*
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        if: github.event_name == 'release'
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./Xray-${{ env.ASSET_NAME }}.zip*
+          tag: ${{ github.ref }}
+          file_glob: true
