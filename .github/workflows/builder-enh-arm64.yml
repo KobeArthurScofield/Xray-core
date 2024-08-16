@@ -1,0 +1,97 @@
+name: Enhanced Builder for ARM64 architecture
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+  push:
+    branches:
+      - builder-enhance
+    paths:
+      - ".github/workflows/builder-enh-arm64.yml"
+jobs:
+  build:
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        goos: [windows, freebsd, openbsd, linux, darwin]
+        goarch: [arm64]
+        goarm64: [v8.0,crypto, v8.2,lse,crypto, v8.4,lse,crypto, v9.0,lse,crypto, v9.2,lse,crypto]
+        gotoolchain: [""]
+        patch-assetname: [""]
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    env:
+      GOOS: ${{ matrix.goos }}
+      GOARCH: ${{ matrix.goarch }}
+      GOARM64: ${{ matrix.goarm64 }}
+      CGO_ENABLED: 0
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Show workflow information
+        run: |
+          _NAME=${{ matrix.patch-assetname }}
+          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOARM64"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOARM64: $GOARM64, RELEASE_NAME: $_NAME"
+          echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.gotoolchain || '1.23' }}
+          check-latest: true
+
+      - name: Get project dependencies
+        run: go mod download
+      
+      - name: Build Xray
+        run: |
+          mkdir -p build_assets
+          make
+          find . -maxdepth 1 -type f -regex './\(wxray\|xray\|xray_softfloat\)\(\|.exe\)' -exec mv {} ./build_assets/ \;
+
+      - name: Copy README.md & LICENSE
+        run: |
+          cp ${GITHUB_WORKSPACE}/README.md ./build_assets/README.md
+          cp ${GITHUB_WORKSPACE}/LICENSE ./build_assets/LICENSE
+
+      - name: Create ZIP archive
+        if: github.event_name == 'release'
+        shell: bash
+        run: |
+          pushd build_assets || exit 1
+          touch -mt $(date +%Y01010000) *
+          zip -9vr ../Xray-${{ env.ASSET_NAME }}.zip .
+          popd || exit 1
+          FILE=./Xray-${{ env.ASSET_NAME }}.zip
+          DGST=$FILE.dgst
+          for METHOD in {"sha256","sha512"}
+          do
+            openssl dgst -$METHOD $FILE | sed 's/([^)]*)//g' >>$DGST
+          done
+
+      - name: Change the name
+        run: |
+          mv build_assets Xray-${{ env.ASSET_NAME }}
+
+      - name: Upload files to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Xray-${{ env.ASSET_NAME }}
+          path: |
+            ./Xray-${{ env.ASSET_NAME }}/*
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        if: github.event_name == 'release'
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./Xray-${{ env.ASSET_NAME }}.zip*
+          tag: ${{ github.ref }}
+          file_glob: true
