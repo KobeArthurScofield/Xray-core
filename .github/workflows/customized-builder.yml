@@ -13,6 +13,9 @@ jobs:
         # Include amd64 and arm64 on all platforms.
         goos: [windows, freebsd, openbsd, linux, darwin]
         goarch: [amd64, arm64, riscv64]
+        goamd64: [""]
+        goarm64: [""]
+        goriscv64: [""]
         gotoolchain: [""]
         patch-assetname: [""]
         exclude:
