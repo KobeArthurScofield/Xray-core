@@ -18,8 +18,6 @@ jobs:
         goos: [windows, freebsd, openbsd, linux, darwin]
         goarch: [amd64]
         goamd64: [v2, v3, v4]
-        gotoolchain: [""]
-        patch-assetname: [""]
       fail-fast: false
 
     runs-on: ubuntu-latest
@@ -36,7 +34,6 @@ jobs:
 
       - name: Show workflow information
         run: |
-          _NAME=${{ matrix.patch-assetname }}
           [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOAMD64"
           echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
@@ -44,7 +41,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: ${{ matrix.gotoolchain || '1.23' }}
+          go-version: 'stable'
           check-latest: true
 
       - name: Get project dependencies
