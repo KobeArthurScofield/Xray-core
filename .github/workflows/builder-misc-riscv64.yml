@@ -41,7 +41,6 @@ jobs:
 
       - name: Show workflow information
         run: |
-          _NAME=${{ matrix.patch-assetname }}
           [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GORISCV64"
           echo "GOOS: $GOOS, GOARCH: $GOARCH, GORISCV64: $GORISCV64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
