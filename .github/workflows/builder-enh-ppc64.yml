@@ -18,11 +18,11 @@ jobs:
         goos: [windows, freebsd, openbsd, linux, darwin]
         goarch: [ppc64, ppc64le]
         goppc64: [power9, power10]
-      exclude:
-        - goos: windows
-        - goos: freebsd
-        - goos: openbsd
-        - goos: darwin
+        exclude:
+          - goos: windows
+          - goos: freebsd
+          - goos: openbsd
+          - goos: darwin
       fail-fast: false
 
     runs-on: ubuntu-latest
