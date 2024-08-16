@@ -13,6 +13,9 @@ jobs:
         # Include amd64 on all platforms.
         goos: [dragonfly, illumos, netbsd, plan9, solaris]
         goarch: [amd64, arm64, riscv64]
+        goamd64: [""]
+        goarm64: [""]
+        goriscv64: [""]
         gotoolchain: [""]
         patch-assetname: [""]
         exclude:
