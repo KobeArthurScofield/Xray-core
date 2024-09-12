@@ -594,7 +594,7 @@ func (c *Config) Build() (*core.Config, error) {
 	}
 
 	if len(c.Transport) > 0 {
-		return nil, PrintRemovedFeatureError("Global transport config")
+		return nil, features.PrintRemovedFeatureError("Global transport config")
 	}
 
 	for _, rawInboundConfig := range inbounds {
