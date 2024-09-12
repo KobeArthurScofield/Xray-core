@@ -107,7 +107,6 @@ func (c *TrojanServerConfig) Build() (proto.Message, error) {
 
 	for idx, rawUser := range c.Clients {
 		if rawUser.Flow != "" {
-			return nil, errors.New(`Trojan doesn't support "flow" anymore.`)
 			return nil, features.PrintRemovedFeatureError(`Flow for Trojan`)
 		}
 
