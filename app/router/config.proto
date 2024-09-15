@@ -77,9 +77,9 @@ message RoutingRule {
     string tag = 1;
 
     // Tag of routing balancer.
-    string balancing_tag = 12;
+    string balancing_tag = 13;
   }
-    string rule_tag = 18;
+    string rule_tag = 14;
 
   // List of domains for target domain matching.
   repeated Domain domain = 2;

@@ -32,6 +32,18 @@ enum DomainStrategy {
   FORCE_IP64 = 10;
 }
 
+message TransportConfig {
+  // Type of network that this settings supports.
+  // Deprecated. Use the string form below.
+  TransportProtocol protocol = 1 [ deprecated = true ];
+
+  // Type of network that this settings supports.
+  string protocol_name = 3;
+
+  // Specific settings. Must be of the transports.
+  xray.common.serial.TypedMessage settings = 2;
+}
+
 message StreamConfig {
   // Effective network.
   string protocol_name = 1;
