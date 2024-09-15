@@ -75,7 +75,7 @@ func testShadowsocks2022Tcp(t *testing.T, method string, password string) {
 				ProxySettings: serial.ToTypedMessage(&shadowsocks_2022.ServerConfig{
 					Method:  method,
 					Key:     password,
-					Networks: []net.Network{net.Network_TCP},
+					Network: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -158,7 +158,7 @@ func testShadowsocks2022Udp(t *testing.T, method string, password string) {
 				ProxySettings: serial.ToTypedMessage(&shadowsocks_2022.ServerConfig{
 					Method:  method,
 					Key:     password,
-					Networks: []net.Network{net.Network_UDP},
+					Network: []net.Network{net.Network_UDP},
 				}),
 			},
 		},
