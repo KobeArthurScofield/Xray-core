@@ -40,7 +40,7 @@ func TestResolveIP(t *testing.T) {
 				Rule: []*router.RoutingRule{
 					Geoip: []*router.GeoIP {
 						{
-							Cidr: []*net.CIDR{
+							Cidr: []*router.CIDR{
 								{
 									Ip:     []byte{127, 0, 0, 0},
 									Prefix: 8,
