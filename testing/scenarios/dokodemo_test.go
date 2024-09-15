@@ -87,7 +87,7 @@ func TestDokodemoTCP(t *testing.T) {
 					ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 						Address: net.NewIPOrDomain(dest.Address),
 						Port:    uint32(dest.Port),
-						Network: []net.Network{net.Network_TCP},
+						Networks: []net.Network{net.Network_TCP},
 					}),
 				},
 			},
@@ -183,7 +183,7 @@ func TestDokodemoUDP(t *testing.T) {
 					ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 						Address: net.NewIPOrDomain(dest.Address),
 						Port:    uint32(dest.Port),
-						Network: []net.Network{net.Network_UDP},
+						Networks: []net.Network{net.Network_UDP},
 					}),
 				},
 			},

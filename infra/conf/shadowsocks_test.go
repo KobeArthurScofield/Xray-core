@@ -29,7 +29,7 @@ func TestShadowsocksServerConfigParsing(t *testing.T) {
 						Password:   "xray-password",
 					}),
 				}},
-				Network: []net.Network{net.Network_TCP},
+				Networks: []net.Network{net.Network_TCP},
 			},
 		},
 	})

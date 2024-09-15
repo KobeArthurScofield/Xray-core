@@ -66,7 +66,7 @@ func TestSocksBridgeTCP(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -145,7 +145,7 @@ func TestSocksWithHttpRequest(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -215,7 +215,7 @@ func TestSocksBridageUDP(t *testing.T) {
 					ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 						Address: net.NewIPOrDomain(dest.Address),
 						Port:    uint32(dest.Port),
-						Network: []net.Network{net.Network_UDP},
+						Networks: []net.Network{net.Network_UDP},
 					}),
 				},
 			},
@@ -249,7 +249,7 @@ func TestSocksBridageUDP(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_UDP},
+					Networks: []net.Network{net.Network_UDP},
 				}),
 			},
 		},
@@ -330,7 +330,7 @@ func TestSocksBridageUDPWithRouting(t *testing.T) {
 					ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 						Address: net.NewIPOrDomain(dest.Address),
 						Port:    uint32(dest.Port),
-						Network: []net.Network{net.Network_UDP},
+						Networks: []net.Network{net.Network_UDP},
 					}),
 				},
 			},
@@ -368,7 +368,7 @@ func TestSocksBridageUDPWithRouting(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_UDP},
+					Networks: []net.Network{net.Network_UDP},
 				}),
 			},
 		},

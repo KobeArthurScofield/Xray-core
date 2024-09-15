@@ -73,7 +73,7 @@ func TestVMessDynamicPort(t *testing.T) {
 					ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 						Address: net.NewIPOrDomain(dest.Address),
 						Port:    uint32(dest.Port),
-						Network: []net.Network{net.Network_TCP},
+						Networks: []net.Network{net.Network_TCP},
 					}),
 				},
 				{
@@ -133,7 +133,7 @@ func TestVMessDynamicPort(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -225,7 +225,7 @@ func TestVMessGCM(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -327,7 +327,7 @@ func TestVMessGCMReadv(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -432,7 +432,7 @@ func TestVMessGCMUDP(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_UDP},
+					Networks: []net.Network{net.Network_UDP},
 				}),
 			},
 		},
@@ -531,7 +531,7 @@ func TestVMessChacha20(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -631,7 +631,7 @@ func TestVMessNone(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -733,7 +733,7 @@ func TestVMessKCP(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -859,7 +859,7 @@ func TestVMessKCPLarge(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -986,7 +986,7 @@ func TestVMessGCMMux(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -1102,7 +1102,7 @@ func TestVMessGCMMuxUDP(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 			{
@@ -1113,7 +1113,7 @@ func TestVMessGCMMuxUDP(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(udpDest.Address),
 					Port:    uint32(udpDest.Port),
-					Network: []net.Network{net.Network_UDP},
+					Networks: []net.Network{net.Network_UDP},
 				}),
 			},
 		},
@@ -1226,7 +1226,7 @@ func TestVMessZero(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -1325,7 +1325,7 @@ func TestVMessGCMLengthAuth(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -1429,7 +1429,7 @@ func TestVMessGCMLengthAuthPlusNoTerminationSignal(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},

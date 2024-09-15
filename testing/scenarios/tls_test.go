@@ -83,7 +83,7 @@ func TestSimpleTLSConnection(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -198,7 +198,7 @@ func TestAutoIssuingCertificate(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -303,7 +303,7 @@ func TestTLSOverKCP(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -403,7 +403,7 @@ func TestTLSOverWebSocket(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -522,7 +522,7 @@ func TestHTTP2(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -641,7 +641,7 @@ func TestGRPC(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -757,7 +757,7 @@ func TestGRPCMultiMode(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -868,7 +868,7 @@ func TestSimpleTLSConnectionPinned(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -970,7 +970,7 @@ func TestSimpleTLSConnectionPinnedWrongCert(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -1071,7 +1071,7 @@ func TestUTLSConnectionPinned(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -1174,7 +1174,7 @@ func TestUTLSConnectionPinnedWrongCert(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},

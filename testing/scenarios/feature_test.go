@@ -55,7 +55,7 @@ func TestPassiveConnection(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -163,7 +163,7 @@ func TestProxy(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -301,7 +301,7 @@ func TestProxyOverKCP(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -388,7 +388,7 @@ func TestBlackhole(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 			{
@@ -399,7 +399,7 @@ func TestBlackhole(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest2.Address),
 					Port:    uint32(dest2.Port),
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 		},
@@ -512,7 +512,7 @@ func TestUDPConnection(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(dest.Address),
 					Port:    uint32(dest.Port),
-					Network: []net.Network{net.Network_UDP},
+					Networks: []net.Network{net.Network_UDP},
 				}),
 			},
 		},
@@ -556,7 +556,7 @@ func TestDomainSniffing(t *testing.T) {
 				ProxySettings: serial.ToTypedMessage(&dokodemo.Config{
 					Address: net.NewIPOrDomain(net.LocalHostIP),
 					Port:    443,
-					Network: []net.Network{net.Network_TCP},
+					Networks: []net.Network{net.Network_TCP},
 				}),
 			},
 			{
