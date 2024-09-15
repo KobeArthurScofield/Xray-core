@@ -420,7 +420,11 @@ func TestBlackhole(t *testing.T) {
 						TargetTag: &router.RoutingRule_Tag{
 							Tag: "blocked",
 						},
-						PortRange: net.SinglePortRange(dest2.Port),
+						PortList: &net.Portlist{
+							Range: []*net.PortRange{
+								{From: dest2.Port, To: dest2.Port},
+							},
+						},
 					},
 				},
 			}),
