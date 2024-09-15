@@ -84,46 +84,29 @@ message RoutingRule {
   // List of domains for target domain matching.
   repeated Domain domain = 2;
 
-  // List of CIDRs for target IP address matching.
-  // Deprecated. Use geoip below.
-  repeated CIDR cidr = 3 [deprecated = true];
-
-  // List of GeoIPs for target IP address matching. If this entry exists, the
-  // cidr above will have no effect. GeoIP fields with the same country code are
-  // supposed to contain exactly same content. They will be merged during
-  // runtime. For customized GeoIPs, please leave country code empty.
-  repeated GeoIP geoip = 10;
-
-  // A range of port [from, to]. If the destination port is in this range, this
-  // rule takes effect. Deprecated. Use port_list.
-  xray.common.net.PortRange port_range = 4 [deprecated = true];
+  // List of GeoIPs for target IP address matching.
+  // For customized GeoIPs, please leave country code empty.
+  repeated GeoIP geoip = 3;
 
   // List of ports.
-  xray.common.net.PortList port_list = 14;
-
-  // List of networks. Deprecated. Use networks.
-  xray.common.net.NetworkList network_list = 5 [deprecated = true];
+  xray.common.net.PortList port_list = 4;
 
   // List of networks for matching.
-  repeated xray.common.net.Network networks = 13;
+  repeated xray.common.net.Network networks = 5;
 
-  // List of CIDRs for source IP address matching.
-  repeated CIDR source_cidr = 6 [deprecated = true];
-
-  // List of GeoIPs for source IP address matching. If this entry exists, the
-  // source_cidr above will have no effect.
-  repeated GeoIP source_geoip = 11;
+  // List of GeoIPs for source IP address matching.
+  repeated GeoIP source_geoip = 6;
 
   // List of ports for source port matching.
-  xray.common.net.PortList source_port_list = 16;
+  xray.common.net.PortList source_port_list = 7;
 
-  repeated string user_email = 7;
-  repeated string inbound_tag = 8;
-  repeated string protocol = 9;
+  repeated string user_email = 8;
+  repeated string inbound_tag = 9;
+  repeated string protocol = 10;
 
-  map<string, string> attributes = 15;
+  map<string, string> attributes = 11;
 
-  string domain_matcher = 17;
+  string domain_matcher = 12;
 }
 
 message BalancingRule {

@@ -14,7 +14,3 @@ enum Network {
   UDP = 3;
   UNIX = 4;
 }
-
-// NetworkList is a list of Networks.
-// Deprecated. Remove after dokodemo-door's and router's reference, before v25.x
-message NetworkList { repeated Network network = 1; }
