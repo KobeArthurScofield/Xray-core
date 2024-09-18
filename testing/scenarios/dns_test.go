@@ -39,10 +39,14 @@ func TestResolveIP(t *testing.T) {
 				DomainStrategy: router.Config_IpIfNonMatch,
 				Rule: []*router.RoutingRule{
 					{
-						Cidr: []*router.CIDR{
+						Geoip: []*GeoIP{
 							{
-								Ip:     []byte{127, 0, 0, 0},
-								Prefix: 8,
+								Cidr: []*router.CIDR{
+									{
+										Ip:     []byte{127, 0, 0, 0},
+										Prefix: 8,
+									},
+								},
 							},
 						},
 						TargetTag: &router.RoutingRule_Tag{
