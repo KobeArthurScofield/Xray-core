@@ -433,8 +433,8 @@ func TestBlackhole(t *testing.T) {
 						PortList: &net.PortList{
 							Range: []*net.PortRange{
 								{
-									From: dest2.Port,
-									To:   dest2.Port,
+									From: uint32(dest2.Port),
+									To:   uint32(dest2.Port),
 								},
 							},
 						},
