@@ -35,8 +35,7 @@ func TestResolveIP(t *testing.T) {
 					{
 						Type:   dns.DomainMatchingType_Full,
 						Domain: "google.com",
-						Ip:     []*byte(dest.Address),
-						//Ip:     []*byte(net.NewIPOrDomain(dest.Address).AsAddress()),
+						Ip:     []*byte(net.NewIPOrDomain(dest.Address).AsAddress()),
 					},
 				},
 			}),
