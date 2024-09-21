@@ -51,9 +51,7 @@ func (c *TransportConfig) GetTypedSettings() (interface{}, error) {
 }
 
 func (c *TransportConfig) GetUnifiedProtocolName() string {
-	if len(c.ProtocolName) > 0 {
-		return c.ProtocolName
-	}
+	return c.ProtocolName
 }
 
 func (c *StreamConfig) GetEffectiveProtocol() string {
