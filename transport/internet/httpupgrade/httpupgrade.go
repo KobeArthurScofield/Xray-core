@@ -11,8 +11,8 @@ import (
 
 const protocolName = "httpupgrade"
 
-func init() {
+/*func init() {
 	common.Must(common.RegisterConfig((*Config)(nil), func(ctx context.Context, config interface{}) (interface{}, error) {
 		return nil, errors.New("httpupgrade is a transport protocol.")
 	}))
-}
+}*/

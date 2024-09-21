@@ -11,8 +11,8 @@ import (
 
 const protocolName = "splithttp"
 
-func init() {
+/*func init() {
 	common.Must(common.RegisterConfig((*Config)(nil), func(ctx context.Context, config interface{}) (interface{}, error) {
 		return nil, errors.New("splithttp is a transport protocol.")
 	}))
-}
+}*/
