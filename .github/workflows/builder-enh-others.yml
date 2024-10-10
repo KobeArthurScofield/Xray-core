@@ -1,4 +1,6 @@
 name: Enhanced Builder for other architecture
+# For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
+# Build 20241010
 
 on:
   workflow_dispatch:
