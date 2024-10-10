@@ -1,4 +1,6 @@
 name: Test Builder for RISCV64 architecture
+# For OS and architecture comnbinations that does not supported by official reposity
+# Build 20241010
 
 on:
   workflow_dispatch:
