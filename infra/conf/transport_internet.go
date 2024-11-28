@@ -17,7 +17,6 @@ import (
 	"github.com/xtls/xray-core/common/serial"
 	"github.com/xtls/xray-core/transport/internet"
 	httpheader "github.com/xtls/xray-core/transport/internet/headers/http"
-	"github.com/xtls/xray-core/transport/internet/http"
 	"github.com/xtls/xray-core/transport/internet/httpupgrade"
 	"github.com/xtls/xray-core/transport/internet/kcp"
 	"github.com/xtls/xray-core/transport/internet/reality"
@@ -347,42 +346,6 @@ type HTTPConfig struct {
 	HealthCheckTimeout int32                  `json:"health_check_timeout"`
 	Method             string                 `json:"method"`
 	Headers            map[string]*StringList `json:"headers"`
-}
-
-// Build implements Buildable.
-func (c *HTTPConfig) Build() (proto.Message, error) {
-	if c.ReadIdleTimeout <= 0 {
-		c.ReadIdleTimeout = 0
-	}
-	if c.HealthCheckTimeout <= 0 {
-		c.HealthCheckTimeout = 0
-	}
-	config := &http.Config{
-		Path:               c.Path,
-		IdleTimeout:        c.ReadIdleTimeout,
-		HealthCheckTimeout: c.HealthCheckTimeout,
-	}
-	if c.Host != nil {
-		config.Host = []string(*c.Host)
-	}
-	if c.Method != "" {
-		config.Method = c.Method
-	}
-	if len(c.Headers) > 0 {
-		config.Header = make([]*httpheader.Header, 0, len(c.Headers))
-		headerNames := sortMapKeys(c.Headers)
-		for _, key := range headerNames {
-			value := c.Headers[key]
-			if value == nil {
-				return nil, errors.New("empty HTTP header value: " + key).AtError()
-			}
-			config.Header = append(config.Header, &httpheader.Header{
-				Name:  key,
-				Value: append([]string(nil), (*value)...),
-			})
-		}
-	}
-	return config, nil
 }
 
 func readFileOrString(f string, s []string) ([]byte, error) {
