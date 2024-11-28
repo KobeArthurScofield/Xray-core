@@ -339,15 +339,6 @@ func (c *SplitHTTPConfig) Build() (proto.Message, error) {
 	return config, nil
 }
 
-type HTTPConfig struct {
-	Host               *StringList            `json:"host"`
-	Path               string                 `json:"path"`
-	ReadIdleTimeout    int32                  `json:"read_idle_timeout"`
-	HealthCheckTimeout int32                  `json:"health_check_timeout"`
-	Method             string                 `json:"method"`
-	Headers            map[string]*StringList `json:"headers"`
-}
-
 func readFileOrString(f string, s []string) ([]byte, error) {
 	if len(f) > 0 {
 		return filesystem.ReadFile(f)
@@ -672,9 +663,6 @@ func (p TransportProtocol) Build() (string, error) {
 		return "mkcp", nil
 	case "ws", "websocket":
 		return "websocket", nil
-	case "h2", "h3", "http":
-		errors.PrintDeprecatedFeatureWarning("HTTP transport", "XHTTP transport")
-		return "http", nil
 	case "grpc":
 		errors.PrintMigrateFeatureInfo("gRPC transport", "XHTTP transport")
 		return "grpc", nil
@@ -813,7 +801,6 @@ type StreamConfig struct {
 	TCPSettings         *TCPConfig         `json:"tcpSettings"`
 	KCPSettings         *KCPConfig         `json:"kcpSettings"`
 	WSSettings          *WebSocketConfig   `json:"wsSettings"`
-	HTTPSettings        *HTTPConfig        `json:"httpSettings"`
 	SocketSettings      *SocketConfig      `json:"sockopt"`
 	GRPCConfig          *GRPCConfig        `json:"grpcSettings"`
 	HTTPUPGRADESettings *HttpUpgradeConfig `json:"httpupgradeSettings"`
@@ -852,8 +839,8 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 		config.SecuritySettings = append(config.SecuritySettings, tm)
 		config.SecurityType = tm.Type
 	case "reality":
-		if config.ProtocolName != "tcp" && config.ProtocolName != "http" && config.ProtocolName != "grpc" && config.ProtocolName != "splithttp" {
-			return nil, errors.New("REALITY only supports RAW, H2, gRPC and XHTTP for now.")
+		if config.ProtocolName != "tcp" && config.ProtocolName != "grpc" && config.ProtocolName != "splithttp" {
+			return nil, errors.New("REALITY only supports RAW, gRPC and XHTTP for now.")
 		}
 		if c.REALITYSettings == nil {
 			return nil, errors.New(`REALITY: Empty "realitySettings".`)
@@ -900,16 +887,6 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 		}
 		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
 			ProtocolName: "websocket",
-			Settings:     serial.ToTypedMessage(ts),
-		})
-	}
-	if c.HTTPSettings != nil {
-		ts, err := c.HTTPSettings.Build()
-		if err != nil {
-			return nil, errors.New("Failed to build HTTP config.").Base(err)
-		}
-		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
-			ProtocolName: "http",
 			Settings:     serial.ToTypedMessage(ts),
 		})
 	}
