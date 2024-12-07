@@ -1,4 +1,4 @@
-package splithttp
+package xhttp
 
 import (
 	"context"
@@ -241,7 +241,7 @@ func init() {
 }
 
 func Dial(ctx context.Context, dest net.Destination, streamSettings *internet.MemoryStreamConfig) (stat.Connection, error) {
-	errors.LogInfo(ctx, "dialing splithttp to ", dest)
+	errors.LogInfo(ctx, "dialing xhttp to ", dest)
 
 	var requestURL url.URL
 

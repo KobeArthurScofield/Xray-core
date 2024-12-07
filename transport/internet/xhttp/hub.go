@@ -1,4 +1,4 @@
-package splithttp
+package xhttp
 
 import (
 	"context"
@@ -356,7 +356,7 @@ func ListenSH(ctx context.Context, address net.Address, port net.Port, streamSet
 		}
 		go func() {
 			if err := l.h3server.ServeListener(l.h3listener); err != nil {
-				errors.LogWarningInner(ctx, err, "failed to serve http3 for splithttp")
+				errors.LogWarningInner(ctx, err, "failed to serve http3 for xhttp")
 			}
 		}()
 	} else { // tcp
@@ -397,7 +397,7 @@ func ListenSH(ctx context.Context, address net.Address, port net.Port, streamSet
 
 		go func() {
 			if err := l.server.Serve(l.listener); err != nil {
-				errors.LogWarningInner(ctx, err, "failed to serve http for splithttp")
+				errors.LogWarningInner(ctx, err, "failed to serve http for xhttp")
 			}
 		}()
 	}

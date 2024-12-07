@@ -1,4 +1,4 @@
-package splithttp
+package xhttp
 
 import (
 	"bytes"
@@ -35,7 +35,7 @@ type DialerClient interface {
 	Open(context.Context, string) (io.WriteCloser, io.ReadCloser)
 }
 
-// implements splithttp.DialerClient in terms of direct network connections
+// implements xhttp.DialerClient in terms of direct network connections
 type DefaultDialerClient struct {
 	transportConfig *Config
 	client          *http.Client

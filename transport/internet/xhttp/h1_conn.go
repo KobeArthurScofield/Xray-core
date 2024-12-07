@@ -1,4 +1,4 @@
-package splithttp
+package xhttp
 
 import (
 	"bufio"

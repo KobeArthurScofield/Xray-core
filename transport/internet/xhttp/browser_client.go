@@ -1,4 +1,4 @@
-package splithttp
+package xhttp
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/xtls/xray-core/transport/internet/websocket"
 )
 
-// implements splithttp.DialerClient in terms of browser dialer
+// implements xhttp.DialerClient in terms of browser dialer
 // has no fields because everything is global state :O)
 type BrowserDialerClient struct{}
 
