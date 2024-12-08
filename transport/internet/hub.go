@@ -1,0 +1,38 @@
+package internet
+
+import (
+	"context"
+
+	"github.com/xtls/xray-core/common/errors"
+	"github.com/xtls/xray-core/common/net"
+	"github.com/xtls/xray-core/transport/internet/stat"
+	"github.com/xtls/xray-core/transport/internet/tcp"
+)
+
+var transportListenerCache = make(map[string]ListenFunc)
+
+func RegisterTransportListener(protocol string, listener ListenFunc) error {
+	if _, found := transportListenerCache[protocol]; found {
+		return errors.New(protocol, " listener already registered.").AtError()
+	}
+	transportListenerCache[protocol] = listener
+	return nil
+}
+
+type ConnHandler func(stat.Connection)
+
+type ListenFunc func(ctx context.Context, address net.Address, port net.Port, settings *MemoryStreamConfig, handler ConnHandler) (tcp.Listener, error)
+
+// ListenSystem listens on a local address for incoming TCP connections.
+//
+// xray:api:beta
+func ListenSystem(ctx context.Context, addr net.Addr, sockopt *SocketConfig) (net.Listener, error) {
+	return effectiveListener.Listen(ctx, addr, sockopt)
+}
+
+// ListenSystemPacket listens on a local address for incoming UDP connections.
+//
+// xray:api:beta
+func ListenSystemPacket(ctx context.Context, addr net.Addr, sockopt *SocketConfig) (net.PacketConn, error) {
+	return effectiveListener.ListenPacket(ctx, addr, sockopt)
+}

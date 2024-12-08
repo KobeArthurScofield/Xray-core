@@ -22,7 +22,7 @@ import (
 	"github.com/xtls/xray-core/transport/internet/kcp"
 	"github.com/xtls/xray-core/transport/internet/reality"
 	"github.com/xtls/xray-core/transport/internet/splithttp"
-	"github.com/xtls/xray-core/transport/internet/tcp"
+	"github.com/xtls/xray-core/transport/internet/raw"
 	"github.com/xtls/xray-core/transport/internet/tls"
 	"github.com/xtls/xray-core/transport/internet/websocket"
 	"google.golang.org/protobuf/proto"
@@ -39,7 +39,7 @@ var (
 		"dns":          func() interface{} { return new(DNSAuthenticator) },
 	}, "type", "")
 
-	tcpHeaderLoader = NewJSONConfigLoader(ConfigCreatorCache{
+	rawHeaderLoader = NewJSONConfigLoader(ConfigCreatorCache{
 		"none": func() interface{} { return new(NoOpConnectionAuthenticator) },
 		"http": func() interface{} { return new(Authenticator) },
 	}, "type", "")
@@ -119,22 +119,22 @@ func (c *KCPConfig) Build() (proto.Message, error) {
 	return config, nil
 }
 
-type TCPConfig struct {
+type RAWConfig struct {
 	HeaderConfig        json.RawMessage `json:"header"`
 	AcceptProxyProtocol bool            `json:"acceptProxyProtocol"`
 }
 
 // Build implements Buildable.
-func (c *TCPConfig) Build() (proto.Message, error) {
-	config := new(tcp.Config)
+func (c *RAWConfig) Build() (proto.Message, error) {
+	config := new(raw.Config)
 	if len(c.HeaderConfig) > 0 {
-		headerConfig, _, err := tcpHeaderLoader.Load(c.HeaderConfig)
+		headerConfig, _, err := rawHeaderLoader.Load(c.HeaderConfig)
 		if err != nil {
-			return nil, errors.New("invalid TCP header config").Base(err).AtError()
+			return nil, errors.New("invalid RAW header config").Base(err).AtError()
 		}
 		ts, err := headerConfig.(Buildable).Build()
 		if err != nil {
-			return nil, errors.New("invalid TCP header config").Base(err).AtError()
+			return nil, errors.New("invalid RAW header config").Base(err).AtError()
 		}
 		config.HeaderSettings = serial.ToTypedMessage(ts)
 	}
@@ -708,7 +708,7 @@ type TransportProtocol string
 func (p TransportProtocol) Build() (string, error) {
 	switch strings.ToLower(string(p)) {
 	case "raw", "tcp":
-		return "tcp", nil
+		return "raw", nil
 	case "kcp", "mkcp":
 		return "mkcp", nil
 	case "ws", "websocket":
@@ -850,8 +850,8 @@ type StreamConfig struct {
 	Security            string             `json:"security"`
 	TLSSettings         *TLSConfig         `json:"tlsSettings"`
 	REALITYSettings     *REALITYConfig     `json:"realitySettings"`
-	RAWSettings         *TCPConfig         `json:"rawSettings"`
-	TCPSettings         *TCPConfig         `json:"tcpSettings"`
+	RAWSettings         *RAWConfig         `json:"rawSettings"`
+	TCPSettings         *RAWConfig         `json:"tcpSettings"`
 	KCPSettings         *KCPConfig         `json:"kcpSettings"`
 	WSSettings          *WebSocketConfig   `json:"wsSettings"`
 	HTTPSettings        *HTTPConfig        `json:"httpSettings"`
@@ -866,7 +866,7 @@ type StreamConfig struct {
 func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 	config := &internet.StreamConfig{
 		Port:         uint32(c.Port),
-		ProtocolName: "tcp",
+		ProtocolName: "raw",
 	}
 	if c.Address != nil {
 		config.Address = c.Address.Build()
@@ -893,7 +893,7 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 		config.SecuritySettings = append(config.SecuritySettings, tm)
 		config.SecurityType = tm.Type
 	case "reality":
-		if config.ProtocolName != "tcp" && config.ProtocolName != "http" && config.ProtocolName != "grpc" && config.ProtocolName != "splithttp" {
+		if config.ProtocolName != "raw" && config.ProtocolName != "http" && config.ProtocolName != "grpc" && config.ProtocolName != "splithttp" {
 			return nil, errors.New("REALITY only supports RAW, H2, gRPC and XHTTP for now.")
 		}
 		if c.REALITYSettings == nil {
@@ -911,16 +911,16 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 	default:
 		return nil, errors.New(`Unknown security "` + c.Security + `".`)
 	}
-	if c.RAWSettings != nil {
-		c.TCPSettings = c.RAWSettings
-	}
 	if c.TCPSettings != nil {
-		ts, err := c.TCPSettings.Build()
+		c.RAWSettings = c.TCPSettings
+	}
+	if c.RAWSettings != nil {
+		ts, err := c.RAWSettings.Build()
 		if err != nil {
 			return nil, errors.New("Failed to build RAW config.").Base(err)
 		}
 		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
-			ProtocolName: "tcp",
+			ProtocolName: "raw",
 			Settings:     serial.ToTypedMessage(ts),
 		})
 	}
