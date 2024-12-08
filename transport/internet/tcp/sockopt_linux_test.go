@@ -23,7 +23,7 @@ func TestGetOriginalDestination(t *testing.T) {
 
 	config, err := internet.ToMemoryStreamConfig(nil)
 	common.Must(err)
-	conn, err := Dial(context.Background(), dest, config)
+	conn, err := raw.Dial(context.Background(), dest, config)
 	common.Must(err)
 	defer conn.Close()
 
