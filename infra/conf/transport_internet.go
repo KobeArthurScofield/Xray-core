@@ -147,6 +147,7 @@ type WebSocketConfig struct {
 	Path                string            `json:"path"`
 	Headers             map[string]string `json:"headers"`
 	AcceptProxyProtocol bool              `json:"acceptProxyProtocol"`
+	HeartbeatPeriod     uint32            `json:"heartbeatPeriod"`
 }
 
 // Build implements Buildable.
@@ -176,6 +177,7 @@ func (c *WebSocketConfig) Build() (proto.Message, error) {
 		Header:              c.Headers,
 		AcceptProxyProtocol: c.AcceptProxyProtocol,
 		Ed:                  ed,
+		HeartbeatPeriod:     c.HeartbeatPeriod,
 	}
 	return config, nil
 }
@@ -234,6 +236,7 @@ type SplitHTTPConfig struct {
 	Mode                 string            `json:"mode"`
 	Extra                json.RawMessage   `json:"extra"`
 	NoGRPCHeader         bool              `json:"noGRPCHeader"`
+	KeepAlivePeriod      int64             `json:"keepAlivePeriod"`
 }
 
 type Xmux struct {
@@ -322,6 +325,7 @@ func (c *SplitHTTPConfig) Build() (proto.Message, error) {
 		Xmux:                 &muxProtobuf,
 		Mode:                 c.Mode,
 		NoGRPCHeader:         c.NoGRPCHeader,
+		KeepAlivePeriod:      c.KeepAlivePeriod,
 	}
 	var err error
 	if c.DownloadSettings != nil {
@@ -658,17 +662,23 @@ func (p TransportProtocol) Build() (string, error) {
 	switch strings.ToLower(string(p)) {
 	case "raw", "tcp":
 		return "tcp", nil
-	case "kcp", "mkcp":
-		return "mkcp", nil
-	case "ws", "websocket":
-		return "websocket", nil
-	case "grpc":
-		errors.PrintMigrateFeatureInfo("gRPC transport", "XHTTP transport")
-		return "grpc", nil
-	case "httpupgrade":
-		return "httpupgrade", nil
 	case "xhttp", "splithttp":
 		return "splithttp", nil
+	case "kcp", "mkcp":
+		return "mkcp", nil
+	case "grpc":
+		errors.PrintDeprecatedFeatureWarning("gRPC transport (with unnecessary costs, etc.)", "XHTTP stream-up H2")
+		return "grpc", nil
+	case "ws", "websocket":
+		errors.PrintDeprecatedFeatureWarning("WebSocket transport (with ALPN http/1.1, etc.)", "XHTTP H2 & H3")
+		return "websocket", nil
+	case "httpupgrade":
+		errors.PrintDeprecatedFeatureWarning("HTTPUpgrade transport (with ALPN http/1.1, etc.)", "XHTTP H2 & H3")
+		return "httpupgrade", nil
+	case "h2", "h3", "http":
+		return "", errors.PrintRemovedFeatureError("HTTP transport (without header padding, etc.)", "XHTTP stream-one H2 & H3")
+	case "quic":
+		return "", errors.PrintRemovedFeatureError("QUIC transport (without web service, etc.)", "XHTTP stream-one H3")
 	default:
 		return "", errors.New("Config: unknown transport protocol: ", p)
 	}
@@ -798,13 +808,13 @@ type StreamConfig struct {
 	REALITYSettings     *REALITYConfig     `json:"realitySettings"`
 	RAWSettings         *TCPConfig         `json:"rawSettings"`
 	TCPSettings         *TCPConfig         `json:"tcpSettings"`
-	KCPSettings         *KCPConfig         `json:"kcpSettings"`
-	WSSettings          *WebSocketConfig   `json:"wsSettings"`
-	SocketSettings      *SocketConfig      `json:"sockopt"`
-	GRPCConfig          *GRPCConfig        `json:"grpcSettings"`
-	HTTPUPGRADESettings *HttpUpgradeConfig `json:"httpupgradeSettings"`
 	XHTTPSettings       *SplitHTTPConfig   `json:"xhttpSettings"`
 	SplitHTTPSettings   *SplitHTTPConfig   `json:"splithttpSettings"`
+	KCPSettings         *KCPConfig         `json:"kcpSettings"`
+	GRPCSettings        *GRPCConfig        `json:"grpcSettings"`
+	WSSettings          *WebSocketConfig   `json:"wsSettings"`
+	HTTPUPGRADESettings *HttpUpgradeConfig `json:"httpupgradeSettings"`
+	SocketSettings      *SocketConfig      `json:"sockopt"`
 }
 
 // Build implements Buildable.
@@ -838,8 +848,8 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 		config.SecuritySettings = append(config.SecuritySettings, tm)
 		config.SecurityType = tm.Type
 	case "reality":
-		if config.ProtocolName != "tcp" && config.ProtocolName != "grpc" && config.ProtocolName != "splithttp" {
-			return nil, errors.New("REALITY only supports RAW, gRPC and XHTTP for now.")
+		if config.ProtocolName != "tcp" && config.ProtocolName != "splithttp" && config.ProtocolName != "grpc" {
+			return nil, errors.New("REALITY only supports RAW, XHTTP and gRPC for now.")
 		}
 		if c.REALITYSettings == nil {
 			return nil, errors.New(`REALITY: Empty "realitySettings".`)
@@ -869,46 +879,6 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 			Settings:     serial.ToTypedMessage(ts),
 		})
 	}
-	if c.KCPSettings != nil {
-		ts, err := c.KCPSettings.Build()
-		if err != nil {
-			return nil, errors.New("Failed to build mKCP config.").Base(err)
-		}
-		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
-			ProtocolName: "mkcp",
-			Settings:     serial.ToTypedMessage(ts),
-		})
-	}
-	if c.WSSettings != nil {
-		ts, err := c.WSSettings.Build()
-		if err != nil {
-			return nil, errors.New("Failed to build WebSocket config.").Base(err)
-		}
-		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
-			ProtocolName: "websocket",
-			Settings:     serial.ToTypedMessage(ts),
-		})
-	}
-	if c.GRPCConfig != nil {
-		gs, err := c.GRPCConfig.Build()
-		if err != nil {
-			return nil, errors.New("Failed to build gRPC config.").Base(err)
-		}
-		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
-			ProtocolName: "grpc",
-			Settings:     serial.ToTypedMessage(gs),
-		})
-	}
-	if c.HTTPUPGRADESettings != nil {
-		hs, err := c.HTTPUPGRADESettings.Build()
-		if err != nil {
-			return nil, errors.New("Failed to build HttpUpgrade config.").Base(err)
-		}
-		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
-			ProtocolName: "httpupgrade",
-			Settings:     serial.ToTypedMessage(hs),
-		})
-	}
 	if c.XHTTPSettings != nil {
 		c.SplitHTTPSettings = c.XHTTPSettings
 	}
@@ -922,10 +892,50 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 			Settings:     serial.ToTypedMessage(hs),
 		})
 	}
+	if c.KCPSettings != nil {
+		ts, err := c.KCPSettings.Build()
+		if err != nil {
+			return nil, errors.New("Failed to build mKCP config.").Base(err)
+		}
+		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
+			ProtocolName: "mkcp",
+			Settings:     serial.ToTypedMessage(ts),
+		})
+	}
+	if c.GRPCSettings != nil {
+		gs, err := c.GRPCSettings.Build()
+		if err != nil {
+			return nil, errors.New("Failed to build gRPC config.").Base(err)
+		}
+		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
+			ProtocolName: "grpc",
+			Settings:     serial.ToTypedMessage(gs),
+		})
+	}
+	if c.WSSettings != nil {
+		ts, err := c.WSSettings.Build()
+		if err != nil {
+			return nil, errors.New("Failed to build WebSocket config.").Base(err)
+		}
+		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
+			ProtocolName: "websocket",
+			Settings:     serial.ToTypedMessage(ts),
+		})
+	}
+	if c.HTTPUPGRADESettings != nil {
+		hs, err := c.HTTPUPGRADESettings.Build()
+		if err != nil {
+			return nil, errors.New("Failed to build HTTPUpgrade config.").Base(err)
+		}
+		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
+			ProtocolName: "httpupgrade",
+			Settings:     serial.ToTypedMessage(hs),
+		})
+	}
 	if c.SocketSettings != nil {
 		ss, err := c.SocketSettings.Build()
 		if err != nil {
-			return nil, errors.New("Failed to build sockopt").Base(err)
+			return nil, errors.New("Failed to build sockopt.").Base(err)
 		}
 		config.SocketSettings = ss
 	}
