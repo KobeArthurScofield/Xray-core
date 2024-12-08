@@ -8,8 +8,6 @@ import (
 	"github.com/xtls/xray-core/transport/internet"
 )
 
-var transportListenerCache = internet.transportListenerCache
-
 // ListenUnix is the UDS version of ListenTCP
 func ListenUnix(ctx context.Context, address net.Address, settings *internet.MemoryStreamConfig, handler internet.ConnHandler) (internet.Listener, error) {
 	if settings == nil {
@@ -20,14 +18,11 @@ func ListenUnix(ctx context.Context, address net.Address, settings *internet.Mem
 		settings = s
 	}
 
-	// Too bad. Figuring out a solution.
-	/*
 	protocol := settings.ProtocolName
-	listenFunc := transportListenerCache[protocol]
-	if listenFunc == nil {
+	listenFunc, err := internet.GetTransportListener(protocol)
+	if err != nil {
 		return nil, errors.New(protocol, " unix listener not registered.").AtError()
 	}
-	*/
 	listener, err := listenFunc(ctx, address, net.Port(0), settings, handler)
 	if err != nil {
 		return nil, errors.New("failed to listen on unix address: ", address).Base(err)
@@ -52,14 +47,11 @@ func ListenTCP(ctx context.Context, address net.Address, port net.Port, settings
 		return nil, errors.New("domain address is not allowed for listening: ", address.Domain())
 	}
 
-	// Too bad. Figuring a solution.
-	/*
 	protocol := settings.ProtocolName
-	listenFunc := transportListenerCache[protocol]
-	if listenFunc == nil {
+	listenFunc, err := internet.GetTransportListener(protocol)
+	if err != nil {
 		return nil, errors.New(protocol, " listener not registered.").AtError()
 	}
-	*/
 	listener, err := listenFunc(ctx, address, port, settings, handler)
 	if err != nil {
 		return nil, errors.New("failed to listen on address: ", address, ":", port).Base(err)

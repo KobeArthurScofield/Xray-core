@@ -18,6 +18,15 @@ func RegisterTransportListener(protocol string, listener ListenFunc) error {
 	return nil
 }
 
+// For inbound listener to get the transport
+func GetTransportListener(protocol string) (ListenFunc, error) {
+	listenFunc := transportListenerCache[protocol]
+	if listenFunc == nil {
+		return nil, errors.New(protocol, " transport listener is not registered.").AtError()
+	}
+	return listenFunc, nil
+}
+
 type ConnHandler func(stat.Connection)
 
 type ListenFunc func(ctx context.Context, address net.Address, port net.Port, settings *MemoryStreamConfig, handler ConnHandler) (Listener, error)
