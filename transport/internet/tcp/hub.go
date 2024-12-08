@@ -8,10 +8,12 @@ import (
 	"github.com/xtls/xray-core/transport/internet"
 )
 
+var transportListenerCache = internet.transportListenerCache
+
 // ListenUnix is the UDS version of ListenTCP
-func ListenUnix(ctx context.Context, address net.Address, settings *MemoryStreamConfig, handler internet.ConnHandler) (internet.Listener, error) {
+func ListenUnix(ctx context.Context, address net.Address, settings *internet.MemoryStreamConfig, handler internet.ConnHandler) (internet.Listener, error) {
 	if settings == nil {
-		s, err := ToMemoryStreamConfig(nil)
+		s, err := internet.ToMemoryStreamConfig(nil)
 		if err != nil {
 			return nil, errors.New("failed to create default unix stream settings").Base(err)
 		}
@@ -19,7 +21,7 @@ func ListenUnix(ctx context.Context, address net.Address, settings *MemoryStream
 	}
 
 	protocol := settings.ProtocolName
-	listenFunc := internet.transportListenerCache[protocol]
+	listenFunc := transportListenerCache[protocol]
 	if listenFunc == nil {
 		return nil, errors.New(protocol, " unix listener not registered.").AtError()
 	}
@@ -30,9 +32,9 @@ func ListenUnix(ctx context.Context, address net.Address, settings *MemoryStream
 	return listener, nil
 }
 
-func ListenTCP(ctx context.Context, address net.Address, port net.Port, settings *MemoryStreamConfig, handler internet.ConnHandler) (internet.Listener, error) {
+func ListenTCP(ctx context.Context, address net.Address, port net.Port, settings *internet.MemoryStreamConfig, handler internet.ConnHandler) (internet.Listener, error) {
 	if settings == nil {
-		s, err := ToMemoryStreamConfig(nil)
+		s, err := internet.ToMemoryStreamConfig(nil)
 		if err != nil {
 			return nil, errors.New("failed to create default stream settings").Base(err)
 		}
@@ -48,7 +50,7 @@ func ListenTCP(ctx context.Context, address net.Address, port net.Port, settings
 	}
 
 	protocol := settings.ProtocolName
-	listenFunc := internet.transportListenerCache[protocol]
+	listenFunc := transportListenerCache[protocol]
 	if listenFunc == nil {
 		return nil, errors.New(protocol, " listener not registered.").AtError()
 	}
