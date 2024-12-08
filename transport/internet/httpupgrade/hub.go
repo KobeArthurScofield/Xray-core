@@ -13,7 +13,7 @@ import (
 	http_proto "github.com/xtls/xray-core/common/protocol/http"
 	"github.com/xtls/xray-core/transport/internet"
 	"github.com/xtls/xray-core/transport/internet/stat"
-	streamtls "github.com/xtls/xray-core/transport/internet/tls"
+	v2tls "github.com/xtls/xray-core/transport/internet/tls"
 )
 
 type server struct {
@@ -131,7 +131,7 @@ func ListenHTTPUpgrade(ctx context.Context, address net.Address, port net.Port, 
 		errors.LogWarning(ctx, "accepting PROXY protocol")
 	}
 
-	if config := streamtls.ConfigFromStreamSettings(streamSettings); config != nil {
+	if config := v2tls.ConfigFromStreamSettings(streamSettings); config != nil {
 		if tlsConfig := config.GetTLSConfig(); tlsConfig != nil {
 			listener = tls.NewListener(listener, tlsConfig)
 		}
