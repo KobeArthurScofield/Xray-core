@@ -805,7 +805,7 @@ type StreamConfig struct {
 	Network             *TransportProtocol `json:"network"`
 	Security            string             `json:"security"`
 	TLSSettings         *TLSConfig         `json:"tlsSettings"`
-	REALITYSettings     *REALITYConfig     `json:"realitySettings`
+	REALITYSettings     *REALITYConfig     `json:"realitySettings"`
 	RAWSettings         *RAWConfig         `json:"rawSettings"`
 	TCPSettings         *RAWConfig         `json:"tcpSettings"`
 	XHTTPSettings       *SplitHTTPConfig   `json:"xhttpSettings"`
