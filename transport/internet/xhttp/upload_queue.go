@@ -1,4 +1,4 @@
-package splithttp
+package xhttp
 
 // upload_queue is a specialized priorityqueue + channel to reorder generic
 // packets by a sequence number
@@ -52,7 +52,7 @@ func (h *uploadQueue) Push(p Packet) error {
 		if p.Reader != nil {
 			p.Reader.Close()
 		}
-		return errors.New("splithttp packet queue closed")
+		return errors.New("xhttp packet queue closed")
 	}
 
 	h.pushedPackets <- p

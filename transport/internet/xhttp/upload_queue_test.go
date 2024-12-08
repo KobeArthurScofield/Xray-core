@@ -1,10 +1,10 @@
-package splithttp_test
+package xhttp_test
 
 import (
 	"testing"
 
 	"github.com/xtls/xray-core/common"
-	. "github.com/xtls/xray-core/transport/internet/splithttp"
+	. "github.com/xtls/xray-core/transport/internet/xhttp"
 )
 
 func Test_regression_readzero(t *testing.T) {

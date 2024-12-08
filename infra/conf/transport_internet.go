@@ -19,10 +19,10 @@ import (
 	"github.com/xtls/xray-core/transport/internet/httpupgrade"
 	"github.com/xtls/xray-core/transport/internet/kcp"
 	"github.com/xtls/xray-core/transport/internet/reality"
-	"github.com/xtls/xray-core/transport/internet/splithttp"
 	"github.com/xtls/xray-core/transport/internet/tcp"
 	"github.com/xtls/xray-core/transport/internet/tls"
 	"github.com/xtls/xray-core/transport/internet/websocket"
+	"github.com/xtls/xray-core/transport/internet/xhttp"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -222,7 +222,7 @@ func (c *HttpUpgradeConfig) Build() (proto.Message, error) {
 	return config, nil
 }
 
-type SplitHTTPConfig struct {
+type XHTTPConfig struct {
 	Host                 string            `json:"host"`
 	Path                 string            `json:"path"`
 	Headers              map[string]string `json:"headers"`
@@ -246,24 +246,24 @@ type Xmux struct {
 	CMaxLifetimeMs *Int32Range `json:"cMaxLifetimeMs"`
 }
 
-func splithttpNewRandRangeConfig(input *Int32Range) *splithttp.RandRangeConfig {
+func xhttpNewRandRangeConfig(input *Int32Range) *xhttp.RandRangeConfig {
 	if input == nil {
-		return &splithttp.RandRangeConfig{
+		return &xhttp.RandRangeConfig{
 			From: 0,
 			To:   0,
 		}
 	}
 
-	return &splithttp.RandRangeConfig{
+	return &xhttp.RandRangeConfig{
 		From: input.From,
 		To:   input.To,
 	}
 }
 
 // Build implements Buildable.
-func (c *SplitHTTPConfig) Build() (proto.Message, error) {
+func (c *XHTTPConfig) Build() (proto.Message, error) {
 	if c.Extra != nil {
-		var extra SplitHTTPConfig
+		var extra XHTTPConfig
 		if err := json.Unmarshal(c.Extra, &extra); err != nil {
 			return nil, errors.New(`Failed to unmarshal "extra".`).Base(err)
 		}
@@ -288,11 +288,11 @@ func (c *SplitHTTPConfig) Build() (proto.Message, error) {
 	}
 
 	// Multiplexing config
-	muxProtobuf := splithttp.Multiplexing{
-		MaxConcurrency: splithttpNewRandRangeConfig(c.Xmux.MaxConcurrency),
-		MaxConnections: splithttpNewRandRangeConfig(c.Xmux.MaxConnections),
-		CMaxReuseTimes: splithttpNewRandRangeConfig(c.Xmux.CMaxReuseTimes),
-		CMaxLifetimeMs: splithttpNewRandRangeConfig(c.Xmux.CMaxLifetimeMs),
+	muxProtobuf := xhttp.Multiplexing{
+		MaxConcurrency: xhttpNewRandRangeConfig(c.Xmux.MaxConcurrency),
+		MaxConnections: xhttpNewRandRangeConfig(c.Xmux.MaxConnections),
+		CMaxReuseTimes: xhttpNewRandRangeConfig(c.Xmux.CMaxReuseTimes),
+		CMaxLifetimeMs: xhttpNewRandRangeConfig(c.Xmux.CMaxLifetimeMs),
 	}
 
 	if muxProtobuf.MaxConcurrency.To == 0 &&
@@ -313,15 +313,15 @@ func (c *SplitHTTPConfig) Build() (proto.Message, error) {
 		return nil, errors.New("unsupported mode: " + c.Mode)
 	}
 
-	config := &splithttp.Config{
+	config := &xhttp.Config{
 		Path:                 c.Path,
 		Host:                 c.Host,
 		Header:               c.Headers,
-		ScMaxConcurrentPosts: splithttpNewRandRangeConfig(c.ScMaxConcurrentPosts),
-		ScMaxEachPostBytes:   splithttpNewRandRangeConfig(c.ScMaxEachPostBytes),
-		ScMinPostsIntervalMs: splithttpNewRandRangeConfig(c.ScMinPostsIntervalMs),
+		ScMaxConcurrentPosts: xhttpNewRandRangeConfig(c.ScMaxConcurrentPosts),
+		ScMaxEachPostBytes:   xhttpNewRandRangeConfig(c.ScMaxEachPostBytes),
+		ScMinPostsIntervalMs: xhttpNewRandRangeConfig(c.ScMinPostsIntervalMs),
 		NoSSEHeader:          c.NoSSEHeader,
-		XPaddingBytes:        splithttpNewRandRangeConfig(c.XPaddingBytes),
+		XPaddingBytes:        xhttpNewRandRangeConfig(c.XPaddingBytes),
 		Xmux:                 &muxProtobuf,
 		Mode:                 c.Mode,
 		NoGRPCHeader:         c.NoGRPCHeader,
@@ -663,7 +663,7 @@ func (p TransportProtocol) Build() (string, error) {
 	case "raw", "tcp":
 		return "tcp", nil
 	case "xhttp", "splithttp":
-		return "splithttp", nil
+		return "xhttp", nil
 	case "kcp", "mkcp":
 		return "mkcp", nil
 	case "grpc":
@@ -808,8 +808,8 @@ type StreamConfig struct {
 	REALITYSettings     *REALITYConfig     `json:"realitySettings"`
 	RAWSettings         *TCPConfig         `json:"rawSettings"`
 	TCPSettings         *TCPConfig         `json:"tcpSettings"`
-	XHTTPSettings       *SplitHTTPConfig   `json:"xhttpSettings"`
-	SplitHTTPSettings   *SplitHTTPConfig   `json:"splithttpSettings"`
+	XHTTPSettings       *XHTTPConfig       `json:"xhttpSettings"`
+	SplitHTTPSettings   *XHTTPConfig       `json:"splithttpSettings"`
 	KCPSettings         *KCPConfig         `json:"kcpSettings"`
 	GRPCSettings        *GRPCConfig        `json:"grpcSettings"`
 	WSSettings          *WebSocketConfig   `json:"wsSettings"`
@@ -848,7 +848,7 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 		config.SecuritySettings = append(config.SecuritySettings, tm)
 		config.SecurityType = tm.Type
 	case "reality":
-		if config.ProtocolName != "tcp" && config.ProtocolName != "splithttp" && config.ProtocolName != "grpc" {
+		if config.ProtocolName != "tcp" && config.ProtocolName != "xhttp" && config.ProtocolName != "grpc" {
 			return nil, errors.New("REALITY only supports RAW, XHTTP and gRPC for now.")
 		}
 		if c.REALITYSettings == nil {
@@ -879,16 +879,16 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 			Settings:     serial.ToTypedMessage(ts),
 		})
 	}
-	if c.XHTTPSettings != nil {
-		c.SplitHTTPSettings = c.XHTTPSettings
-	}
 	if c.SplitHTTPSettings != nil {
-		hs, err := c.SplitHTTPSettings.Build()
+		c.XHTTPSettings = c.SplitHTTPSettings
+	}
+	if c.XHTTPSettings != nil {
+		hs, err := c.XHTTPSettings.Build()
 		if err != nil {
 			return nil, errors.New("Failed to build XHTTP config.").Base(err)
 		}
 		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
-			ProtocolName: "splithttp",
+			ProtocolName: "xhttp",
 			Settings:     serial.ToTypedMessage(hs),
 		})
 	}

@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package xray.transport.internet.splithttp;
-option csharp_namespace = "Xray.Transport.Internet.SplitHttp";
-option go_package = "github.com/xtls/xray-core/transport/internet/splithttp";
-option java_package = "com.xray.transport.internet.splithttp";
+package xray.transport.internet.xhttp;
+option csharp_namespace = "Xray.Transport.Internet.XHttp";
+option go_package = "github.com/xtls/xray-core/transport/internet/xhttp";
+option java_package = "com.xray.transport.internet.xhttp";
 option java_multiple_files = true;
 
 import "transport/internet/config.proto";
