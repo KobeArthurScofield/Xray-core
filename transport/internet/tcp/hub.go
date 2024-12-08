@@ -8,13 +8,8 @@ import (
 	"github.com/xtls/xray-core/transport/internet"
 )
 
-type Listener interface {
-	Close() error
-	Addr() net.Addr
-}
-
 // ListenUnix is the UDS version of ListenTCP
-func ListenUnix(ctx context.Context, address net.Address, settings *MemoryStreamConfig, handler internet.ConnHandler) (Listener, error) {
+func ListenUnix(ctx context.Context, address net.Address, settings *MemoryStreamConfig, handler internet.ConnHandler) (internet.Listener, error) {
 	if settings == nil {
 		s, err := ToMemoryStreamConfig(nil)
 		if err != nil {
@@ -35,7 +30,7 @@ func ListenUnix(ctx context.Context, address net.Address, settings *MemoryStream
 	return listener, nil
 }
 
-func ListenTCP(ctx context.Context, address net.Address, port net.Port, settings *MemoryStreamConfig, handler internet.ConnHandler) (Listener, error) {
+func ListenTCP(ctx context.Context, address net.Address, port net.Port, settings *MemoryStreamConfig, handler internet.ConnHandler) (internet.Listener, error) {
 	if settings == nil {
 		s, err := ToMemoryStreamConfig(nil)
 		if err != nil {

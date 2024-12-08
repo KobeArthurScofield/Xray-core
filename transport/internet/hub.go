@@ -6,7 +6,6 @@ import (
 	"github.com/xtls/xray-core/common/errors"
 	"github.com/xtls/xray-core/common/net"
 	"github.com/xtls/xray-core/transport/internet/stat"
-	"github.com/xtls/xray-core/transport/internet/tcp"
 )
 
 var transportListenerCache = make(map[string]ListenFunc)
@@ -21,8 +20,12 @@ func RegisterTransportListener(protocol string, listener ListenFunc) error {
 
 type ConnHandler func(stat.Connection)
 
-type ListenFunc func(ctx context.Context, address net.Address, port net.Port, settings *MemoryStreamConfig, handler ConnHandler) (tcp.Listener, error)
+type ListenFunc func(ctx context.Context, address net.Address, port net.Port, settings *MemoryStreamConfig, handler ConnHandler) (Listener, error)
 
+type Listener interface {
+	Close() error
+	Addr() net.Addr
+}
 // ListenSystem listens on a local address for incoming TCP connections.
 //
 // xray:api:beta
