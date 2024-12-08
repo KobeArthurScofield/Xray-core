@@ -119,7 +119,7 @@ func (w *tcpWorker) Proxy() proxy.Inbound {
 
 func (w *tcpWorker) Start() error {
 	ctx := context.Background()
-	hub, err := tcp.ListenTCP(ctx, w.address, w.port, w.stream, func(conn stat.Connection) {
+	hub, err := internet.ListenTCP(ctx, w.address, w.port, w.stream, func(conn stat.Connection) {
 		go w.callback(conn)
 	})
 	if err != nil {
@@ -500,7 +500,7 @@ func (w *dsWorker) Port() net.Port {
 
 func (w *dsWorker) Start() error {
 	ctx := context.Background()
-	hub, err := tcp.ListenUnix(ctx, w.address, w.stream, func(conn stat.Connection) {
+	hub, err := internet.ListenUnix(ctx, w.address, w.stream, func(conn stat.Connection) {
 		go w.callback(conn)
 	})
 	if err != nil {
