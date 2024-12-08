@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.35.1
 // 	protoc        v5.28.2
-// source: transport/internet/tcp/config.proto
+// source: transport/internet/raw/config.proto
 
-package tcp
+package raw
 
 import (
 	serial "github.com/xtls/xray-core/common/serial"
@@ -32,7 +32,7 @@ type Config struct {
 
 func (x *Config) Reset() {
 	*x = Config{}
-	mi := &file_transport_internet_tcp_config_proto_msgTypes[0]
+	mi := &file_transport_internet_raw_config_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +44,7 @@ func (x *Config) String() string {
 func (*Config) ProtoMessage() {}
 
 func (x *Config) ProtoReflect() protoreflect.Message {
-	mi := &file_transport_internet_tcp_config_proto_msgTypes[0]
+	mi := &file_transport_internet_raw_config_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +57,7 @@ func (x *Config) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Config.ProtoReflect.Descriptor instead.
 func (*Config) Descriptor() ([]byte, []int) {
-	return file_transport_internet_tcp_config_proto_rawDescGZIP(), []int{0}
+	return file_transport_internet_raw_config_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Config) GetHeaderSettings() *serial.TypedMessage {
@@ -74,14 +74,14 @@ func (x *Config) GetAcceptProxyProtocol() bool {
 	return false
 }
 
-var File_transport_internet_tcp_config_proto protoreflect.FileDescriptor
+var File_transport_internet_raw_config_proto protoreflect.FileDescriptor
 
-var file_transport_internet_tcp_config_proto_rawDesc = []byte{
+var file_transport_internet_raw_config_proto_rawDesc = []byte{
 	0x0a, 0x23, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x70, 0x6f, 0x72, 0x74, 0x2f, 0x69, 0x6e, 0x74, 0x65,
-	0x72, 0x6e, 0x65, 0x74, 0x2f, 0x74, 0x63, 0x70, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e,
+	0x72, 0x6e, 0x65, 0x74, 0x2f, 0x72, 0x61, 0x77, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1b, 0x78, 0x72, 0x61, 0x79, 0x2e, 0x74, 0x72, 0x61, 0x6e,
-	0x73, 0x70, 0x6f, 0x72, 0x74, 0x2e, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x2e, 0x74,
-	0x63, 0x70, 0x1a, 0x21, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x73, 0x65, 0x72, 0x69, 0x61,
+	0x73, 0x70, 0x6f, 0x72, 0x74, 0x2e, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x2e, 0x72,
+	0x61, 0x77, 0x1a, 0x21, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x73, 0x65, 0x72, 0x69, 0x61,
 	0x6c, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x64, 0x5f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x8d, 0x01, 0x0a, 0x06, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67,
 	0x12, 0x49, 0x0a, 0x0f, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x74, 0x74, 0x69,
@@ -94,34 +94,34 @@ var file_transport_internet_tcp_config_proto_rawDesc = []byte{
 	0x70, 0x74, 0x50, 0x72, 0x6f, 0x78, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x4a,
 	0x04, 0x08, 0x01, 0x10, 0x02, 0x42, 0x73, 0x0a, 0x1f, 0x63, 0x6f, 0x6d, 0x2e, 0x78, 0x72, 0x61,
 	0x79, 0x2e, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x70, 0x6f, 0x72, 0x74, 0x2e, 0x69, 0x6e, 0x74, 0x65,
-	0x72, 0x6e, 0x65, 0x74, 0x2e, 0x74, 0x63, 0x70, 0x50, 0x01, 0x5a, 0x30, 0x67, 0x69, 0x74, 0x68,
+	0x72, 0x6e, 0x65, 0x74, 0x2e, 0x72, 0x61, 0x77, 0x50, 0x01, 0x5a, 0x30, 0x67, 0x69, 0x74, 0x68,
 	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78, 0x74, 0x6c, 0x73, 0x2f, 0x78, 0x72, 0x61, 0x79,
 	0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x70, 0x6f, 0x72, 0x74, 0x2f,
-	0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x2f, 0x74, 0x63, 0x70, 0xaa, 0x02, 0x1b, 0x58,
+	0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x2f, 0x72, 0x61, 0x77, 0xaa, 0x02, 0x1b, 0x58,
 	0x72, 0x61, 0x79, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x70, 0x6f, 0x72, 0x74, 0x2e, 0x49, 0x6e,
-	0x74, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x2e, 0x54, 0x63, 0x70, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x74, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x2e, 0x52, 0x61, 0x77, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x33,
 }
 
 var (
-	file_transport_internet_tcp_config_proto_rawDescOnce sync.Once
-	file_transport_internet_tcp_config_proto_rawDescData = file_transport_internet_tcp_config_proto_rawDesc
+	file_transport_internet_raw_config_proto_rawDescOnce sync.Once
+	file_transport_internet_raw_config_proto_rawDescData = file_transport_internet_raw_config_proto_rawDesc
 )
 
-func file_transport_internet_tcp_config_proto_rawDescGZIP() []byte {
-	file_transport_internet_tcp_config_proto_rawDescOnce.Do(func() {
-		file_transport_internet_tcp_config_proto_rawDescData = protoimpl.X.CompressGZIP(file_transport_internet_tcp_config_proto_rawDescData)
+func file_transport_internet_raw_config_proto_rawDescGZIP() []byte {
+	file_transport_internet_raw_config_proto_rawDescOnce.Do(func() {
+		file_transport_internet_raw_config_proto_rawDescData = protoimpl.X.CompressGZIP(file_transport_internet_raw_config_proto_rawDescData)
 	})
-	return file_transport_internet_tcp_config_proto_rawDescData
+	return file_transport_internet_raw_config_proto_rawDescData
 }
 
-var file_transport_internet_tcp_config_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_transport_internet_tcp_config_proto_goTypes = []any{
-	(*Config)(nil),              // 0: xray.transport.internet.tcp.Config
+var file_transport_internet_raw_config_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_transport_internet_raw_config_proto_goTypes = []any{
+	(*Config)(nil),              // 0: xray.transport.internet.raw.Config
 	(*serial.TypedMessage)(nil), // 1: xray.common.serial.TypedMessage
 }
-var file_transport_internet_tcp_config_proto_depIdxs = []int32{
-	1, // 0: xray.transport.internet.tcp.Config.header_settings:type_name -> xray.common.serial.TypedMessage
+var file_transport_internet_raw_config_proto_depIdxs = []int32{
+	1, // 0: xray.transport.internet.raw.Config.header_settings:type_name -> xray.common.serial.TypedMessage
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -129,27 +129,27 @@ var file_transport_internet_tcp_config_proto_depIdxs = []int32{
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_transport_internet_tcp_config_proto_init() }
-func file_transport_internet_tcp_config_proto_init() {
-	if File_transport_internet_tcp_config_proto != nil {
+func init() { file_transport_internet_raw_config_proto_init() }
+func file_transport_internet_raw_config_proto_init() {
+	if File_transport_internet_raw_config_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_transport_internet_tcp_config_proto_rawDesc,
+			RawDescriptor: file_transport_internet_raw_config_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_transport_internet_tcp_config_proto_goTypes,
-		DependencyIndexes: file_transport_internet_tcp_config_proto_depIdxs,
-		MessageInfos:      file_transport_internet_tcp_config_proto_msgTypes,
+		GoTypes:           file_transport_internet_raw_config_proto_goTypes,
+		DependencyIndexes: file_transport_internet_raw_config_proto_depIdxs,
+		MessageInfos:      file_transport_internet_raw_config_proto_msgTypes,
 	}.Build()
-	File_transport_internet_tcp_config_proto = out.File
-	file_transport_internet_tcp_config_proto_rawDesc = nil
-	file_transport_internet_tcp_config_proto_goTypes = nil
-	file_transport_internet_tcp_config_proto_depIdxs = nil
+	File_transport_internet_raw_config_proto = out.File
+	file_transport_internet_raw_config_proto_rawDesc = nil
+	file_transport_internet_raw_config_proto_goTypes = nil
+	file_transport_internet_raw_config_proto_depIdxs = nil
 }
