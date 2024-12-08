@@ -879,7 +879,7 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 			Settings:     serial.ToTypedMessage(ts),
 		})
 	}
-	if c.SplitSettings != nil {
+	if c.SplitHTTPSettings != nil {
 		c.XHTTPSettings = c.SplitHTTPSettings
 	}
 	if c.XHTTPSettings != nil {
