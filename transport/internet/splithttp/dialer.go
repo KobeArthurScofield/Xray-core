@@ -83,23 +83,34 @@ func getHTTPClient(ctx context.Context, dest net.Destination, streamSettings *in
 	return res.Resource.(DialerClient), res
 }
 
+func h(tlsConfig *tls.Config, realityConfig *reality.Config) int {
+	if realityConfig != nil {
+		return 2
+	}
+	if tlsConfig == nil {
+		return 1
+	}
+	if len(tlsConfig.NextProtocol) != 1 {
+		return 2
+	}
+	if tlsConfig.NextProtocol[0] == "http/1.1" {
+		return 1
+	}
+	if tlsConfig.NextProtocol[0] == "h3" {
+		return 3
+	}
+	return 2
+}
+
 func createHTTPClient(dest net.Destination, streamSettings *internet.MemoryStreamConfig) DialerClient {
 	tlsConfig := tls.ConfigFromStreamSettings(streamSettings)
 	realityConfig := reality.ConfigFromStreamSettings(streamSettings)
 
-	isH2 := false
-	isH3 := false
-
-	if tlsConfig != nil {
-		isH2 = !(len(tlsConfig.NextProtocol) == 1 && tlsConfig.NextProtocol[0] == "http/1.1")
-		isH3 = len(tlsConfig.NextProtocol) == 1 && tlsConfig.NextProtocol[0] == "h3"
-	} else if realityConfig != nil {
-		isH2 = true
-		isH3 = false
-	}
+	isH2 := h(tlsConfig, realityConfig) == 2
+	isH3 := h(tlsConfig, realityConfig) == 3
 
 	if isH3 {
-		dest.Network = net.Network_UDP
+		dest.Network = net.Network_UDP // better to keep this line
 	}
 
 	var gotlsConfig *gotls.Config
@@ -242,16 +253,16 @@ func init() {
 }
 
 func Dial(ctx context.Context, dest net.Destination, streamSettings *internet.MemoryStreamConfig) (stat.Connection, error) {
-	errors.LogInfo(ctx, "dialing splithttp to ", dest)
-
-	var requestURL url.URL
-
-	transportConfiguration := streamSettings.ProtocolSettings.(*Config)
 	tlsConfig := tls.ConfigFromStreamSettings(streamSettings)
 	realityConfig := reality.ConfigFromStreamSettings(streamSettings)
 
-	scMaxEachPostBytes := transportConfiguration.GetNormalizedScMaxEachPostBytes()
-	scMinPostsIntervalMs := transportConfiguration.GetNormalizedScMinPostsIntervalMs()
+	if h(tlsConfig, realityConfig) == 3 {
+		dest.Network = net.Network_UDP
+	}
+	errors.LogInfo(ctx, "XHTTP is dialing to: ", dest)
+
+	transportConfiguration := streamSettings.ProtocolSettings.(*Config)
+	var requestURL url.URL
 
 	if tlsConfig != nil || realityConfig != nil {
 		requestURL.Scheme = "https"
@@ -275,8 +286,8 @@ func Dial(ctx context.Context, dest net.Destination, streamSettings *internet.Me
 
 	httpClient, muxRes := getHTTPClient(ctx, dest, streamSettings)
 
-	httpClient2 := httpClient
 	requestURL2 := requestURL
+	httpClient2 := httpClient
 	var muxRes2 *muxResource
 	if transportConfiguration.DownloadSettings != nil {
 		globalDialerAccess.Lock()
@@ -286,9 +297,12 @@ func Dial(ctx context.Context, dest net.Destination, streamSettings *internet.Me
 		globalDialerAccess.Unlock()
 		memory2 := streamSettings.DownloadSettings
 		dest2 := *memory2.Destination // just panic
-		httpClient2, muxRes2 = getHTTPClient(ctx, dest2, memory2)
 		tlsConfig2 := tls.ConfigFromStreamSettings(memory2)
 		realityConfig2 := reality.ConfigFromStreamSettings(memory2)
+		if h(tlsConfig2, realityConfig2) == 3 {
+			dest2.Network = net.Network_UDP
+		}
+		errors.LogInfo(ctx, "XHTTP is downloading from: ", dest2)
 		if tlsConfig2 != nil || realityConfig2 != nil {
 			requestURL2.Scheme = "https"
 		} else {
@@ -307,19 +321,20 @@ func Dial(ctx context.Context, dest net.Destination, streamSettings *internet.Me
 		}
 		requestURL2.Path = config2.GetNormalizedPath() + sessionIdUuid.String()
 		requestURL2.RawQuery = config2.GetNormalizedQuery()
+		httpClient2, muxRes2 = getHTTPClient(ctx, dest2, memory2)
 	}
 
 	mode := transportConfiguration.Mode
 	if mode == "" || mode == "auto" {
 		mode = "packet-up"
-		if (tlsConfig != nil && (len(tlsConfig.NextProtocol) != 1 || tlsConfig.NextProtocol[0] == "h2")) || realityConfig != nil {
+		if h(tlsConfig, realityConfig) == 2 {
 			mode = "stream-up"
 		}
 		if realityConfig != nil && transportConfiguration.DownloadSettings == nil {
 			mode = "stream-one"
 		}
 	}
-	errors.LogInfo(ctx, "XHTTP is using mode: "+mode)
+	errors.LogInfo(ctx, "XHTTP is using mode: ", mode)
 
 	var writer io.WriteCloser
 	var reader io.ReadCloser
@@ -373,6 +388,9 @@ func Dial(ctx context.Context, dest net.Destination, streamSettings *internet.Me
 		return stat.Connection(&conn), nil
 	}
 
+	scMaxEachPostBytes := transportConfiguration.GetNormalizedScMaxEachPostBytes()
+	scMinPostsIntervalMs := transportConfiguration.GetNormalizedScMinPostsIntervalMs()
+
 	maxUploadSize := scMaxEachPostBytes.roll()
 	// WithSizeLimit(0) will still allow single bytes to pass, and a lot of
 	// code relies on this behavior. Subtract 1 so that together with
@@ -408,10 +426,7 @@ func Dial(ctx context.Context, dest net.Destination, streamSettings *internet.Me
 			seq += 1
 
 			if scMinPostsIntervalMs.From > 0 {
-				sleep := time.Duration(scMinPostsIntervalMs.roll())*time.Millisecond - time.Since(lastWrite)
-				if sleep > 0 {
-					time.Sleep(sleep)
-				}
+				time.Sleep(time.Duration(scMinPostsIntervalMs.roll())*time.Millisecond - time.Since(lastWrite))
 			}
 
 			// by offloading the uploads into a buffered pipe, multiple conn.Write
