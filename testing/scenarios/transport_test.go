@@ -19,7 +19,7 @@ import (
 	"github.com/xtls/xray-core/testing/servers/tcp"
 	"github.com/xtls/xray-core/transport/internet"
 	"github.com/xtls/xray-core/transport/internet/headers/http"
-	tcptransport "github.com/xtls/xray-core/transport/internet/tcp"
+	"github.com/xtls/xray-core/transport/internet/raw"
 )
 
 func TestHTTPConnectionHeader(t *testing.T) {
@@ -41,8 +41,8 @@ func TestHTTPConnectionHeader(t *testing.T) {
 					StreamSettings: &internet.StreamConfig{
 						TransportSettings: []*internet.TransportConfig{
 							{
-								ProtocolName: "tcp",
-								Settings: serial.ToTypedMessage(&tcptransport.Config{
+								ProtocolName: "raw",
+								Settings: serial.ToTypedMessage(&raw.Config{
 									HeaderSettings: serial.ToTypedMessage(&http.Config{}),
 								}),
 							},
@@ -103,8 +103,8 @@ func TestHTTPConnectionHeader(t *testing.T) {
 					StreamSettings: &internet.StreamConfig{
 						TransportSettings: []*internet.TransportConfig{
 							{
-								ProtocolName: "tcp",
-								Settings: serial.ToTypedMessage(&tcptransport.Config{
+								ProtocolName: "raw",
+								Settings: serial.ToTypedMessage(&raw.Config{
 									HeaderSettings: serial.ToTypedMessage(&http.Config{}),
 								}),
 							},
