@@ -56,7 +56,7 @@ func (c *TransportConfig) GetUnifiedProtocolName() string {
 
 func (c *StreamConfig) GetEffectiveProtocol() string {
 	if c == nil || len(c.ProtocolName) == 0 {
-		return "tcp"
+		return "raw"
 	}
 
 	return c.ProtocolName
