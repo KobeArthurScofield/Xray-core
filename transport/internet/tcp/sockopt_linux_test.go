@@ -11,6 +11,7 @@ import (
 	"github.com/xtls/xray-core/common"
 	"github.com/xtls/xray-core/testing/servers/tcp"
 	"github.com/xtls/xray-core/transport/internet"
+	"github.com/xtls/xray-core/transport/internet/raw"
 	. "github.com/xtls/xray-core/transport/internet/tcp"
 )
 
@@ -22,7 +23,7 @@ func TestGetOriginalDestination(t *testing.T) {
 
 	config, err := internet.ToMemoryStreamConfig(nil)
 	common.Must(err)
-	conn, err := Dial(context.Background(), dest, config)
+	conn, err := raw.Dial(context.Background(), dest, config)
 	common.Must(err)
 	defer conn.Close()
 
