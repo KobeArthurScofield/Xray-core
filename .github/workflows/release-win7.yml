@@ -33,7 +33,7 @@ jobs:
       - name: Restore Go
         uses: actions/cache/restore@v4
         with:
-          path: patched-go
+          path: go
           key: xray-patched-go-
 
       - name: Set up Go compiler
@@ -44,8 +44,8 @@ jobs:
 
       - name: Prepare patched Go source directory
         run: |
-          mkdir patched-go
-          cd patched-go
+          [ -d 'go' ] || mkdir go
+          cd go
 
       - name: Download patched Go
         uses: actions/checkout@v4
@@ -63,7 +63,7 @@ jobs:
       - name: Save built Go
         uses: actions/cache/save@v4
         with:
-          path: patched-go
+          path: go
           key: xray-patched-go-${{ github.sha }}-${{ github.run_number }}
 
       - name: Restore Cache
@@ -138,13 +138,13 @@ jobs:
       - name: Restore Go builder
         uses: actions/cache/restore@v4
         with:
-          path: patched-go
+          path: go
           key: xray-patched-go-
 
       - name: Restore environment
         run: |
-          export PATH=$PATH:$PWD/patched-go/bin
-          go env -w GOPATH=$PWD/patched-go
+          export PATH=$PATH:$PWD/go/bin
+          go env -w GOPATH=$PWD/go
 
       - name: Checkout codebase
         uses: actions/checkout@v4
