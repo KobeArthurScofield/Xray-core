@@ -48,9 +48,12 @@ jobs:
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
           cd ../
+          FILELIST = $(shell ls $PWD)
           [ -d 'patched-go' ] || mkdir patched-go
-          cp -r ./* ./patched-go/
-          rm -r ./patched-go/patched-go
+          for i in "${FILELIST[@]}"
+          do
+            cp -r $i ./patched-go
+          done
 
       - name: Save built Go
         uses: actions/cache/save@v4
