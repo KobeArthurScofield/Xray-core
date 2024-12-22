@@ -155,7 +155,22 @@ jobs:
             VERSION
           key: xray-patched-go-${{ github.sha }}-${{ github.run_number }}
 
-      - name: Restore environment
+      - name: Set environment
+        run: |
+          export PATH=$PATH:$PWD/bin
+          $PWD/bin/go version
+          $PWD/bin/go env -w GOPATH=$PWD
+          $PWD/bin/go env -w GOROOT=$PWD
+          go version
+
+      - name: Checkout codebase
+        uses: actions/checkout@v4
+
+      - name: Get project dependencies
+        run: |
+          go mod download
+
+      - name: Build Xray
         run: |
           export PATH=$PATH:$PWD/bin
           export GOROOT=$PWD
@@ -163,15 +178,6 @@ jobs:
           $PWD/bin/go version
           $PWD/bin/go env -w GOPATH=$PWD
           go version
-
-      - name: Checkout codebase
-        uses: actions/checkout@v4
-
-      - name: Get project dependencies
-        run: go mod download
-
-      - name: Build Xray
-        run: |
           mkdir -p build_assets
           make
           find . -maxdepth 1 -type f -regex './\(wxray\|xray\).exe' -exec mv {} ./build_assets/ \;
