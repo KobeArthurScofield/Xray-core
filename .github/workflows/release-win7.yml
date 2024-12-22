@@ -14,14 +14,14 @@ on:
     branches:
       - main
     paths:
-      - "**/*.go"
+      # - "**/*.go"
       - "go.mod"
       - "go.sum"
       - ".github/workflows/release-win7.yml"
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - "**/*.go"
+      # - "**/*.go"
       - "go.mod"
       - "go.sum"
       - ".github/workflows/release-win7.yml"
@@ -33,17 +33,7 @@ jobs:
       - name: Restore Go
         uses: actions/cache/restore@v4
         with:
-          path: |
-            api
-            bin
-            doc
-            lib
-            misc
-            pkg
-            src
-            test
-            go.env
-            VERSION
+          path: patched-go
           key: xray-patched-go-
 
       - name: Set up Go compiler
@@ -67,21 +57,13 @@ jobs:
         run: |
           cd src
           ./all.bash
+          mkdir ../bin
+          cp ../../bin/* ../bin
 
       - name: Save built Go
         uses: actions/cache/save@v4
         with:
-          path: |
-            api
-            bin
-            doc
-            lib
-            misc
-            pkg
-            src
-            test
-            go.env
-            VERSION
+          path: patched-go
           key: xray-patched-go-${{ github.sha }}-${{ github.run_number }}
 
       - name: Restore Cache
@@ -155,22 +137,12 @@ jobs:
       - name: Restore Go builder
         uses: actions/cache/restore@v4
         with:
-          path: |
-            api
-            bin
-            doc
-            lib
-            misc
-            pkg
-            src
-            test
-            go.env
-            VERSION
+          path: patched-go
           key: xray-patched-go-
 
       - name: Restore environment
         run: |
-          export PATH=$PATH:/home/runner/work/Xray-core/Xray-core/bin
+          export PATH=$PATH:/home/runner/work/Xray-core/Xray-core/patched-go/bin
 
       - name: Checkout codebase
         uses: actions/checkout@v4
