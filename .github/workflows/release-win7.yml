@@ -49,12 +49,19 @@ jobs:
 
       - name: Build patched Go
         run: |
-          ls
+          echo $PWD
+          ls $PWD
+          echo go
+          ls ../go
+          echo PWDgo
+          ls $PWD/go
           cd src
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
           cd $PWD
+          echo $PWD
           ls
+          echo PWDgo
           ls $PWD/go
           #[ -d 'go' ] || mkdir go
           #GOFILE=('api' 'bin' 'doc' 'lib' 'misc' 'pkg' 'src' 'test' 'go.env' 'VERSION')
