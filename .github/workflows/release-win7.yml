@@ -48,7 +48,7 @@ jobs:
           cd src
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
-          cd $PWD
+          cd ../
           echo $PWD
           ls
           #[ -d 'go' ] || mkdir go
