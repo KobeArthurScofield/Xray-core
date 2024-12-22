@@ -63,6 +63,7 @@ jobs:
             doc
             lib
             misc
+            pkg
             src
             test
             go.env
@@ -150,6 +151,7 @@ jobs:
             doc
             lib
             misc
+            pkg
             src
             test
             go.env
@@ -162,6 +164,7 @@ jobs:
           export GOROOT=$PWD
           $PWD/bin/go version
           $PWD/bin/go env -w GOPATH=$PWD
+          go version
 
       - name: Checkout codebase
         uses: actions/checkout@v4
