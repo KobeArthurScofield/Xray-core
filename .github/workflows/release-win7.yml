@@ -154,7 +154,7 @@ jobs:
           PARAMS='-trimpath -ldflags "$(LDFLAGS)" -v'
           PARAMS2='-trimpath -ldflags "-H windowsgui $(LDFLAGS)" -v'
           MAIN='./main'
-          PREFIX ?= $PWD
+          PREFIX?=$PWD
           OUTPUT='$(NAME).exe'
           ./patched-go/bin/go clean -v -i $(PWD)
           rm -f xray xray.exe wxray.exe xray_softfloat
