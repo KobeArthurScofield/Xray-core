@@ -124,7 +124,7 @@ jobs:
           cd ../..
 
       - name: Export environment variables for cross compiling
-      - run: |
+        run: |
           export $GOOS = ${{ matrix.goos }}
           export $GOARCH = ${{ matrix.goarch}}
 
