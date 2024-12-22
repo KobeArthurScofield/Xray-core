@@ -156,7 +156,7 @@ jobs:
             test
             go.env
             VERSION
-          key: xray-patched-go-
+          key: xray-patched-go-${{ github.sha }}-${{ github.run_number }}
 
       - name: Restore environment
         run: |
