@@ -30,6 +30,10 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     steps:
+      - name: Show current path
+        run: |
+          echo $pwd
+
       - name: Restore Go
         uses: actions/cache/restore@v4
         with:
@@ -57,6 +61,7 @@ jobs:
         run: |
           cd src
           ./all.bash
+          cd ../..
 
       - name: Save built Go
         uses: actions/cache/save@v4
@@ -131,6 +136,7 @@ jobs:
           _NAME=${{ matrix.assetname }}
           echo "GOOS: ${{ matrix.goos }}, GOARCH: ${{ matrix.goarch }}, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
+          echo "Current path is $PWD"
       
       - name: Restore Go builder
         uses: actions/cache/restore@v4
