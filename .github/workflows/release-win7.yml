@@ -48,7 +48,7 @@ jobs:
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
           cd ../
-          FILELIST=$(sh ls $PWD)
+          FILELIST=$(bash ls $PWD)
           [ -d 'patched-go' ] || mkdir patched-go
           for i in "${FILELIST[@]}"
           do
