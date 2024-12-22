@@ -143,6 +143,7 @@ jobs:
       - name: Restore environment
         run: |
           export PATH=$PATH:/home/runner/work/Xray-core/Xray-core/patched-go/bin
+          go env -w GOPATH=/home/runner/work/Xray-core/Xray-core/patched-go
 
       - name: Checkout codebase
         uses: actions/checkout@v4
