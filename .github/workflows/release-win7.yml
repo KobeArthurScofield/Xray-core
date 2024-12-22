@@ -53,23 +53,17 @@ jobs:
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
           cd ../..
-          whereis go
-          # rm -r /opt/hostedtoolcache/go
+          [ -d 'go' ] || mkdir go
+          GOFILE=('api' 'bin' 'doc' 'lib' 'misc' 'pkg' 'src' 'test' 'go.env' 'VERSION')\
+          for i in "${GOFILE[@]}"
+          do
+            cp -r $i go/
+          done
 
       - name: Save built Go
         uses: actions/cache/save@v4
         with:
-          path: |
-            api
-            bin
-            doc
-            lib
-            misc
-            pkg
-            src
-            test
-            go.env
-            VERSION
+          path: go
           key: xray-patched-go-${{ github.sha }}-${{ github.run_number }}
 
       - name: Restore Cache
@@ -139,36 +133,23 @@ jobs:
           _NAME=${{ matrix.assetname }}
           echo "GOOS: ${{ matrix.goos }}, GOARCH: ${{ matrix.goarch }}, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
-          echo "Current path is $PWD"
+
+      - name: Checkout codebase
+        uses: actions/checkout@v4
       
       - name: Restore Go builder
         uses: actions/cache/restore@v4
         with:
-          path: |
-            api
-            bin
-            doc
-            lib
-            misc
-            pkg
-            src
-            test
-            go.env
-            VERSION
+          path: go
           key: xray-patched-go-${{ github.sha }}-${{ github.run_number }}
 
       - name: Set environment
         run: |
-          rm -rf /usr/local/go/*
-          cp -rf * /usr/local/go/
-          export PATH=$PATH:/usr/local/go/bin
-          /usr/local/go/bin version
-          /usr/local/go/bin env -w GOPATH=$PWD
-          /usr/local/go/bin env -w GOROOT=$/usr/local/go
+          export PATH=$PATH:$PWD/go/bin
+          $PWD/go/bin/go version
+          $PWD/go/bin/go env -w GOPATH=$PWD
+          $PWD/go/bin/go env -w GOROOT=$PWD/go
           go version
-
-      - name: Checkout codebase
-        uses: actions/checkout@v4
 
       - name: Get project dependencies
         run: |
