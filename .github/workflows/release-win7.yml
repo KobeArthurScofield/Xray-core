@@ -75,11 +75,6 @@ jobs:
       contents: write
     strategy:
       matrix:
-        goos: [""]
-        goarch: [""]
-        gotoolchain-ref: [""]
-        gotoolchain-branch: [""]
-        assetname: [""]
         include:
           # BEGIN Windows 7
           - goos: windows
@@ -97,8 +92,6 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      GOOS: ${{ matrix.goos }}
-      GOARCH: ${{ matrix.goarch }}
       CGO_ENABLED: 0
     steps:
       - name: Show workflow information
@@ -129,6 +122,11 @@ jobs:
           cd src
           ./all.bash
           cd ../..
+
+      - name: Export environment variables for cross compiling
+      - run: |
+          export $GOOS = ${{ matrix.goos }}
+          export $GOARCH = ${{ matrix.goarch}}
 
       - name: Checkout codebase
         uses: actions/checkout@v4
