@@ -110,7 +110,8 @@ jobs:
       - name: Set up Go compiler
         uses: actions/setup-go@v5
         with:
-          go-version: 'latest'
+          go-version: 'stable'
+          check-latest: true
 
       - name: Prepare patched Go source directory
         run: |
