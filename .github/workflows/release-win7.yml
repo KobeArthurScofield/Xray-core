@@ -159,8 +159,7 @@ jobs:
 
       - name: Set environment
         run: |
-          rm -rf /usr/local/go
-          mkdir /usr/local/go
+          rm -rf /usr/local/go/*
           cp -rf * /usr/local/go/
           export PATH=$PATH:/usr/local/go/bin
           /usr/local/go/bin version
