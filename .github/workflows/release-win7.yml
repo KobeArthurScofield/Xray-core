@@ -51,8 +51,6 @@ jobs:
         run: |
           echo $PWD
           ls $PWD
-          echo go
-          ls ../go
           echo PWDgo
           ls $PWD/go
           cd src
