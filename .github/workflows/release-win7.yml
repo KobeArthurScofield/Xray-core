@@ -52,13 +52,13 @@ jobs:
           cd src
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
-          cd ../..
-          [ -d 'go' ] || mkdir go
-          GOFILE=('bin' 'doc' 'lib' 'misc' 'pkg' 'src' 'test' 'go.env' 'VERSION')
-          for i in "${GOFILE[@]}"
-          do
-            cp -r $i go/
-          done
+          cd $PWD
+          # [ -d 'go' ] || mkdir go
+          # GOFILE=('api' 'bin' 'doc' 'lib' 'misc' 'pkg' 'src' 'test' 'go.env' 'VERSION')
+          # for i in "${GOFILE[@]}"
+          # do
+          #   cp -r $PWD/$i go/
+          # done
 
       - name: Save built Go
         uses: actions/cache/save@v4
