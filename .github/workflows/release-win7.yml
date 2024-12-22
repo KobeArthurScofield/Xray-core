@@ -48,11 +48,15 @@ jobs:
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
           cd ../
-          FILELIST=$(bash ls $PWD)
           [ -d 'patched-go' ] || mkdir patched-go
-          for i in "${FILELIST[@]}"
+          for i in "${PWD}"/*
           do
-            cp -r $i ./patched-go
+            if i == 'patched-go'
+              continue
+            else
+              cp -r $i ./patched-go
+              echo 'Copied $i into patched-go'
+            fi
           done
 
       - name: Save built Go
