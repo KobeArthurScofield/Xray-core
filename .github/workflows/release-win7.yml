@@ -51,7 +51,7 @@ jobs:
           [ -d 'patched-go' ] || mkdir patched-go
           for i in "${PWD}"/*
           do
-            if i == 'patched-go'
+            if i == 'patched-go' ; then
               continue
             else
               cp -r $i ./patched-go
