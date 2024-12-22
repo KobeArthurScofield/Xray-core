@@ -60,7 +60,8 @@ jobs:
       - name: Build patched Go
         run: |
           cd src
-          ./all.bash
+          . ./make.bash "$@" --no-banner
+          "$GOTOOLDIR/dist" banner
           cd ../..
 
       - name: Save built Go
