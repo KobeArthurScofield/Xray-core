@@ -169,8 +169,24 @@ jobs:
       - name: Build Xray
         run: |
           mkdir -p build_assets
-          make
-          find . -maxdepth 1 -type f -regex './\(wxray\|xray\|xray_softfloat\)\(\|.exe\)' -exec mv {} ./build_assets/ \;
+          NAME = xray
+          VERSION=$(shell git describe --always --dirty)
+          LDFLAGS = -X github.com/xtls/xray-core/core.build=$(VERSION) -s -w -buildid=
+          PARAMS = -trimpath -ldflags "$(LDFLAGS)" -v
+          MAIN = ./main
+          PREFIX ?= $PWD/bin
+          OUTPUT = $(NAME).exe
+          .PHONY: clean build
+
+          build:
+          	$PWD/bin/go build -o $(OUTPUT) $(PARAMS) $(MAIN)
+            $PWD/bin/go build -o w$(OUTPUT) -trimpath -ldflags "-H windowsgui $(LDFLAGS)" -v $(MAIN)
+          
+          clean:
+          	go clean -v -i $(PWD)
+          	rm -f xray xray.exe wxray.exe xray_softfloat
+          
+          find . -maxdepth 1 -type f -regex './\(wxray\|xray\).exe' -exec mv {} ./build_assets/ \;
 
       - name: Restore Cache
         uses: actions/cache/restore@v4
