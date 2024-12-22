@@ -57,7 +57,6 @@ jobs:
         run: |
           cd src
           ./all.bash
-          mkdir ../bin
           cp ../../bin/* ../bin
 
       - name: Save built Go
