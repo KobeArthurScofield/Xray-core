@@ -48,16 +48,8 @@ jobs:
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
           cd ../
-          [ -d 'patched-go' ] || mkdir patched-go
-          for i in "${PWD}"/*
-          do
-            if [[ ${i} == "patched-go" ]] ; then
-              continue
-            else
-              cp -r ${i} ./patched-go
-              echo 'Copied ${i} into patched-go'
-            fi
-          done
+          mkdir -p patched-go
+          rsync -av --exclude 'patched-go' ./ 'patched-go'
 
       - name: Save built Go
         uses: actions/cache/save@v4
