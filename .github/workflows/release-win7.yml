@@ -53,6 +53,7 @@ jobs:
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
           cd ../..
+          rm -r /opt/hostedtoolcache/go
 
       - name: Save built Go
         uses: actions/cache/save@v4
