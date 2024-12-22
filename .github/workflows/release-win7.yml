@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Show current path
         run: |
-          echo $pwd
+          echo "$PWD"
 
       - name: Restore Go
         uses: actions/cache/restore@v4
