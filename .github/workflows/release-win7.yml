@@ -57,7 +57,15 @@ jobs:
       - name: Save built Go
         uses: actions/cache/save@v4
         with:
-          path: bin
+          path: |
+            api
+            bin
+            doc
+            lib
+            misc
+            src
+            test
+            go.env
           key: xray-patched-go-${{ github.sha }}-${{ github.run_number }}
 
       - name: Restore Cache
@@ -132,12 +140,21 @@ jobs:
       - name: Restore Go builder
         uses: actions/cache/restore@v4
         with:
-          path: bin
+          path: |
+            api
+            bin
+            doc
+            lib
+            misc
+            src
+            test
+            go.env
           key: xray-patched-go-
 
       - name: Restore environment
         run: |
           export PATH=$PATH:$PWD/bin
+          export GOROOT=$PWD
           $PWD/bin/go env -w GOPATH=$PWD
 
       - name: Checkout codebase
