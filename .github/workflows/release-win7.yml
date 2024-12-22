@@ -57,7 +57,6 @@ jobs:
         run: |
           cd src
           ./all.bash
-          cp ../../bin/* ../bin
 
       - name: Save built Go
         uses: actions/cache/save@v4
