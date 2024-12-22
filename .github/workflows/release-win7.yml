@@ -36,11 +36,6 @@ jobs:
           go-version: 'stable'
           check-latest: true
 
-      - name: Prepare patched Go source directory
-        run: |
-          mkdir go
-          cd go
-
       - name: Download patched Go
         uses: actions/checkout@v4
         with:
@@ -49,18 +44,13 @@ jobs:
 
       - name: Build patched Go
         run: |
-          echo $PWD
           ls $PWD
-          echo PWDgo
-          ls $PWD/go
           cd src
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
           cd $PWD
           echo $PWD
           ls
-          echo PWDgo
-          ls $PWD/go
           #[ -d 'go' ] || mkdir go
           #GOFILE=('api' 'bin' 'doc' 'lib' 'misc' 'pkg' 'src' 'test' 'go.env' 'VERSION')
           #for i in "${GOFILE[@]}"
