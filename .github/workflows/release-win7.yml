@@ -66,6 +66,7 @@ jobs:
             src
             test
             go.env
+            VERSION
           key: xray-patched-go-${{ github.sha }}-${{ github.run_number }}
 
       - name: Restore Cache
@@ -149,12 +150,14 @@ jobs:
             src
             test
             go.env
+            VERSION
           key: xray-patched-go-
 
       - name: Restore environment
         run: |
           export PATH=$PATH:$PWD/bin
           export GOROOT=$PWD
+          $PWD/bin/go version
           $PWD/bin/go env -w GOPATH=$PWD
 
       - name: Checkout codebase
