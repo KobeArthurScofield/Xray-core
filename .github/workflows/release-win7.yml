@@ -131,8 +131,6 @@ jobs:
       GOOS: ${{ matrix.goos}}
       GOARCH: ${{ matrix.goarch }}
       CGO_ENABLED: 0
-      GOROOT: $PWD
-      GOPATH: $PWD
     steps:
       - name: Show workflow information
         run: |
@@ -160,6 +158,8 @@ jobs:
       - name: Restore environment
         run: |
           export PATH=$PATH:$PWD/bin
+          export GOROOT=$PWD
+          export GOPATH=$PWD
           $PWD/bin/go version
           $PWD/bin/go env -w GOPATH=$PWD
           go version
