@@ -150,12 +150,12 @@ jobs:
           ./patched-go/bin/go env -w GOPATH=$PWD
           ./patched-go/bin/go env -w GOROOT=$PWD/patched-go
           mkdir -p build_assets
-          LDFLAGS = -X github.com/xtls/xray-core/core.build=$(VERSION) -s -w -buildid=
-          PARAMS = -trimpath -ldflags "$(LDFLAGS)" -v
-          PARAMS2 = -trimpath -ldflags "-H windowsgui $(LDFLAGS)" -v
-          MAIN = ./main
+          LDFLAGS='-X github.com/xtls/xray-core/core.build=$(VERSION) -s -w -buildid='
+          PARAMS='-trimpath -ldflags "$(LDFLAGS)" -v'
+          PARAMS2='-trimpath -ldflags "-H windowsgui $(LDFLAGS)" -v'
+          MAIN='./main'
           PREFIX ?= $PWD
-          OUTPUT = $(NAME).exe
+          OUTPUT='$(NAME).exe'
           ./patched-go/bin/go clean -v -i $(PWD)
           rm -f xray xray.exe wxray.exe xray_softfloat
           ./patched-go/bin/go build -o $(OUTPUT) $(PARAMS) $(MAIN)
