@@ -49,16 +49,19 @@ jobs:
 
       - name: Build patched Go
         run: |
+          ls
           cd src
           . ./make.bash "$@" --no-banner
           "$GOTOOLDIR/dist" banner
           cd $PWD
-          # [ -d 'go' ] || mkdir go
-          # GOFILE=('api' 'bin' 'doc' 'lib' 'misc' 'pkg' 'src' 'test' 'go.env' 'VERSION')
-          # for i in "${GOFILE[@]}"
-          # do
-          #   cp -r $PWD/$i go/
-          # done
+          ls
+          ls $PWD/go
+          #[ -d 'go' ] || mkdir go
+          #GOFILE=('api' 'bin' 'doc' 'lib' 'misc' 'pkg' 'src' 'test' 'go.env' 'VERSION')
+          #for i in "${GOFILE[@]}"
+          #do
+          #  cp -r $PWD/$i go/
+          #done
 
       - name: Save built Go
         uses: actions/cache/save@v4
