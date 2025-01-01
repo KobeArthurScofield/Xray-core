@@ -1,6 +1,6 @@
 name: Enhanced Builder for PPC64/PPC64LE architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20241010
+# Build 20250101
 
 on:
   workflow_dispatch:
@@ -48,7 +48,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 'stable'
+          go-version-file: go.mod
           check-latest: true
 
       - name: Get project dependencies
