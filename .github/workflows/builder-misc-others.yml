@@ -1,6 +1,6 @@
 name: Test Builder for other architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20250101
+# Build 20250214
 
 on:
   workflow_dispatch:
@@ -78,8 +78,13 @@ jobs:
       - name: Build Xray
         run: |
           mkdir -p build_assets
-          make
-          find . -maxdepth 1 -type f -regex './\(wxray\|xray\|xray_softfloat\)\(\|.exe\)' -exec mv {} ./build_assets/ \;
+          COMMID=$(git describe --always --dirty)
+          if [[ ${GOOS} == 'windows' ]]; then
+            go build -buildvcs=false -o build_assets/xray.exe -trimpath -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+            go build -buildvcs=false -o build_assets/wxray.exe -trimpath -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+          else
+            go build -buildvcs=false -o build_assets/xray -trimpath -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+          fi
 
       - name: Copy README.md & LICENSE
         run: |
