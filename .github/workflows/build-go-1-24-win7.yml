@@ -3,11 +3,11 @@ name: Test builder for Go 1.24 Windows 7
 on:
   workflow_dispatch:
   push:
-    path:
+    paths:
       - .github/workflows/build-go-1-24-win7.yml
   pull_request:
     types: [opened, synchronize, reopened]
-    path:
+    paths:
       - .github/workflows/build-go-1-24-win7.yml
 
 jobs:

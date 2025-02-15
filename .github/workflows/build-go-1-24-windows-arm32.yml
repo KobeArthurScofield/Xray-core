@@ -3,11 +3,11 @@ name: Test Builder for Go 1.24 Windows ARM32
 on:
   workflow_dispatch:
   push:
-    path:
+    paths:
       - .github/workflows/build-go-1-24-windows-arm32.yml
   pull_request:
     types: [opened, synchronize, reopened]
-    path:
+    paths:
       - .github/workflows/build-go-1-24-windows-arm32.yml
 
 jobs:
