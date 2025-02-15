@@ -80,11 +80,11 @@ jobs:
           mkdir -p build_assets
           COMMID=$(git describe --always --dirty)
           if [[ ${GOOS} == 'windows' ]]; then
-            echo 'Build Xray for Windows...'
+            echo 'Building Xray for Windows...'
             go build -o build_assets/xray.exe -trimpath -buildvcs=false -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
             go build -o build_assets/wxray.exe -trimpath -buildvcs=false -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
           else
-            echo 'Build Xray...'
+            echo 'Building Xray...'
             go build -o build_assets/xray -trimpath -buildvcs=false -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
           fi
 
