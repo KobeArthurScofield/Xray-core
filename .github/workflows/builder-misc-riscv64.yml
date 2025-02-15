@@ -1,6 +1,6 @@
 name: Test Builder for RISCV64 architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20250214
+# Build 20250215
 
 on:
   workflow_dispatch:
@@ -61,10 +61,12 @@ jobs:
           mkdir -p build_assets
           COMMID=$(git describe --always --dirty)
           if [[ ${GOOS} == 'windows' ]]; then
-            go build -buildvcs=false -o build_assets/xray.exe -trimpath -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
-            go build -buildvcs=false -o build_assets/wxray.exe -trimpath -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+            echo 'Build Xray for Windows...'
+            go build -o build_assets/xray.exe -trimpath -buildvcs=false -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+            go build -o build_assets/wxray.exe -trimpath -buildvcs=false -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
           else
-            go build -buildvcs=false -o build_assets/xray -trimpath -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+            echo 'Build Xray...'
+            go build -o build_assets/xray -trimpath -buildvcs=false -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
           fi
 
       - name: Copy README.md & LICENSE
