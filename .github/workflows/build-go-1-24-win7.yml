@@ -1,0 +1,82 @@
+name: Test builder for Go 1.24 Windows 7
+
+on:
+  workflow_dispatch:
+    push:
+      path:
+        - .github/workflows/build-go-1-24-win7.yml
+    pull_request:
+      types: [opened, synchronize, reopened]
+      path:
+        - .github/workflows/build-go-1-24-win7.yml
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        include:
+          # BEGIN Windows 7
+          - goos: windows
+            goarch: amd64
+            assetname: win7-64
+          - goos: windows
+            goarch: 386
+            assetname: win7-32
+          # END Windows 7
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    env:
+      GOOS: ${{ matrix.goos}}
+      GOARCH: ${{ matrix.goarch }}
+      CGO_ENABLED: 0
+    steps:
+      - name: Show workflow information
+        run: |
+          _NAME=${{ matrix.assetname }}
+          echo "GOOS: ${{ matrix.goos }}, GOARCH: ${{ matrix.goarch }}, RELEASE_NAME: $_NAME"
+          echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          check-latest: true
+
+      - name: Setup patched builder
+        run: |
+          GOSDK=$(go env GOROOT)
+          curl -O -L https://github.com/XTLS/go-win7/releases/download/patched-1.24.0/go-for-win7-linux-amd64.zip
+          rm -r ${GOSDK}/*
+          unzip ./go-for-win7-linux-amd64.zip -d ${GOSDK}
+
+      - name: Checkout codebase
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Get project dependencies
+        run: go mod download
+
+      - name: Build Xray
+        run: |
+          mkdir -p build_assets
+          COMMID=$(git describe --always --dirty)
+          echo 'Building Xray for Windows 7...'
+          go build -o build_assets/xray.exe -trimpath -buildvcs=false -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+          # echo 'CreateObject("Wscript.Shell").Run "xray.exe -config config.json",0' > build_assets/xray_no_window.vbs
+          # echo 'Start-Process -FilePath ".\xray.exe" -ArgumentList "-config .\config.json" -WindowStyle Hidden' > build_assets/xray_no_window.ps1
+          go build -o build_assets/wxray.exe -trimpath -buildvcs=false -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+
+      - name: Change the name
+        run: |
+          mv build_assets Xray-${{ env.ASSET_NAME }}
+
+      - name: Upload files to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Xray-${{ env.ASSET_NAME }}
+          path: |
+            ./Xray-${{ env.ASSET_NAME }}/*
