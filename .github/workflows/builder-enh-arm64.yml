@@ -76,11 +76,11 @@ jobs:
           zip -9vr ../Xray-${{ env.ASSET_NAME }}.zip .
           popd || exit 1
           FILE=./Xray-${{ env.ASSET_NAME }}.zip
-          DGST=$FILE.dgst
-          for METHOD in {"sha256","sha512"}
-          do
-            openssl dgst -$METHOD $FILE | sed 's/([^)]*)//g' >>$DGST
-          done
+        # DGST=$FILE.dgst
+        # for METHOD in {"sha256","sha512"}
+        # do
+        #   openssl dgst -$METHOD $FILE | sed 's/([^)]*)//g' >>$DGST
+        # done
 
       - name: Change the name
         run: |
