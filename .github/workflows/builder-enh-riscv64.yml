@@ -1,6 +1,6 @@
 name: Enhanced Builder for RISCV64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20250726
+# Build 20250727
 
 on:
   workflow_dispatch:
