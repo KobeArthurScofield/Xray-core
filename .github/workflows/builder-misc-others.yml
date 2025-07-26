@@ -1,6 +1,6 @@
 name: Test Builder for other architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20250726
+# Build 20250727
 
 on:
   workflow_dispatch:
@@ -25,6 +25,9 @@ jobs:
           - goos: freebsd
             goarch: riscv64
             goriscv64: rva22u64
+          - goos: freebsd
+            goarch: riscv64
+            goriscv64: rva23u64
           # END FreeBSD RISCV64
           # BEGIN OpenBSD
           - goos: openbsd
@@ -42,6 +45,9 @@ jobs:
           - goos: openbsd
             goarch: riscv64
             goriscv64: rva22u64
+          - goos: openbsd
+            goarch: riscv64
+            goriscv64: rva23u64
           # END OpenBSD
       fail-fast: false
 
