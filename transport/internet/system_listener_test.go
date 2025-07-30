@@ -13,10 +13,9 @@ import (
 func TestRegisterListenerController(t *testing.T) {
 	var gotFd uintptr
 
-	common.Must(internet.RegisterListenerController(func(network, address string, conn syscall.RawConn) error {
-		return control.Raw(conn, func(fd uintptr) error {
-			gotFd = fd
-			return nil
+	common.Must(internet.RegisterListenerController(func(network string, addr string, fd uintptr) error {
+		gotFd = fd
+		return nil
 		})
 	}))
 

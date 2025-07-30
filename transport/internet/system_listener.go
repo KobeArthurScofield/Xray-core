@@ -17,19 +17,15 @@ import (
 
 var effectiveListener = DefaultListener{}
 
+type controller func(network, address string, fd uintptr) error
+
 type DefaultListener struct {
-	controllers []control.Func
+	controllers []controller
 }
 
-func getControlFunc(ctx context.Context, sockopt *SocketConfig, controllers []control.Func) func(network, address string, c syscall.RawConn) error {
+func getControlFunc(ctx context.Context, sockopt *SocketConfig, controllers []controller) func(network, address string, c syscall.RawConn) error {
 	return func(network, address string, c syscall.RawConn) error {
 		return c.Control(func(fd uintptr) {
-			for _, controller := range controllers {
-				if err := controller(network, address, c); err != nil {
-					errors.LogInfoInner(ctx, err, "failed to apply external controller")
-				}
-			}
-
 			if sockopt != nil {
 				if err := applyInboundSocketOptions(network, fd, sockopt); err != nil {
 					errors.LogInfoInner(ctx, err, "failed to apply socket options to incoming connection")
@@ -37,6 +33,12 @@ func getControlFunc(ctx context.Context, sockopt *SocketConfig, controllers []co
 			}
 
 			setReusePort(fd)
+
+			for _, controller := range controllers {
+				if err := controller(network, address, fd); err != nil {
+					errors.LogInfoInner(ctx, err, "failed to apply external controller")
+				}
+			}
 		})
 	}
 }
@@ -186,7 +188,7 @@ func (dl *DefaultListener) ListenPacket(ctx context.Context, addr net.Addr, sock
 // The controller can be used to operate on file descriptors before they are put into use.
 //
 // xray:api:beta
-func RegisterListenerController(controller control.Func) error {
+func RegisterListenerController(controller func(network, address string, fd uintptr) error) error {
 	if controller == nil {
 		return errors.New("nil listener controller")
 	}
