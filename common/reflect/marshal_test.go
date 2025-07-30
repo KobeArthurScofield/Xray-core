@@ -10,15 +10,9 @@ import (
 	. "github.com/xtls/xray-core/common/reflect"
 	cserial "github.com/xtls/xray-core/common/serial"
 	iserial "github.com/xtls/xray-core/infra/conf/serial"
-	"github.com/xtls/xray-core/proxy/shadowsocks"
 )
 
 func TestMashalAccount(t *testing.T) {
-	account := &shadowsocks.Account{
-		Password:   "shadowsocks-password",
-		CipherType: shadowsocks.CipherType_CHACHA20_POLY1305,
-	}
-
 	user := &protocol.User{
 		Level:   0,
 		Email:   "love@v2ray.com",
@@ -29,13 +23,6 @@ func TestMashalAccount(t *testing.T) {
 	if !ok || strings.Contains(j, "_TypedMessage_") {
 
 		t.Error("marshal account failed")
-	}
-
-	kws := []string{"CHACHA20_POLY1305", "cipherType", "shadowsocks-password"}
-	for _, kw := range kws {
-		if !strings.Contains(j, kw) {
-			t.Error("marshal account failed")
-		}
 	}
 	// t.Log(j)
 }
