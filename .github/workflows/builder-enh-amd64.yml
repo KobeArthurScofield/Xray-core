@@ -1,6 +1,6 @@
 name: Enhanced Builder for AMD64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20250727
+# Build 20250820
 
 on:
   workflow_dispatch:
@@ -55,11 +55,11 @@ jobs:
           COMMID=$(git describe --always --dirty)
           if [[ ${GOOS} == 'windows' ]]; then
             echo 'Building Xray for Windows...'
-            go build -o build_assets/xray.exe -trimpath -buildvcs=false -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
-            go build -o build_assets/wxray.exe -trimpath -buildvcs=false -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+            go build -o build_assets/xray.exe -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+            go build -o build_assets/wxray.exe -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
           else
             echo 'Building Xray...'
-            go build -o build_assets/xray -trimpath -buildvcs=false -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+            go build -o build_assets/xray -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
           fi
 
       - name: Copy README.md & LICENSE
