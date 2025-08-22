@@ -45,7 +45,7 @@ func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 	var optDump bool
 	var optType bool
 
-	pbOutFile = cmd.Flag.String("outpbfile", "", "Save proto file directly into file.")
+	var pbOutFile = cmd.Flag.String("outpbfile", "", "Save proto file directly into file.")
 	
 	cmd.Flag.BoolVar(&optDump, "d", false, "")
 	cmd.Flag.BoolVar(&optDump, "debug", false, "")
@@ -82,7 +82,7 @@ func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 	}
 
 	if len(*pbOutFile) > 0 {
-		f, err := os.Create(optFile)
+		f, err := os.Create(pbOutFile)
 		if err != nil {
 			base.Fatalf("failed to create ptoro file: %s", err)
 		}
