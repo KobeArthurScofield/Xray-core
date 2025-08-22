@@ -14,14 +14,14 @@ import (
 
 var cmdProtobuf = &base.Command{
 	CustomFlags: true,
-	UsageLine:   "{{.Exec}} convert pb [-outpbfile <file>] [-debug] [-type] [json file] [json file] ...",
+	UsageLine:   "{{.Exec}} convert pb [-outpbfile file] [-debug] [-type] [json file] [json file] ...",
 	Short:       "Convert multiple json configs to protobuf",
 	Long: `
 Convert multiple json configs to protobuf.
 
 Arguments:
 
-	-outpbfile <file>
+	-o file, -outpbfile file
 		Write the ProtoBuf (.pb) file to specified location.
 
 	-d, -debug
@@ -42,11 +42,14 @@ Examples:
 
 func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 
+	var optFile string
 	var optDump bool
 	var optType bool
 
-	var pbOutFile = cmd.Flag.String("outpbfile", "", "Save proto file directly into file.")
-	
+	// var pbOutFile = cmd.Flag.String("outpbfile", "", "Save proto file directly into file.")
+
+	cmd.Flag.StringVar(&optFile, "o", "", "")
+	cmd.Flag.StringVar(&optFile, "outpbfile", "", "")
 	cmd.Flag.BoolVar(&optDump, "d", false, "")
 	cmd.Flag.BoolVar(&optDump, "debug", false, "")
 	cmd.Flag.BoolVar(&optType, "t", false, "")
@@ -81,10 +84,12 @@ func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 		base.Fatalf("failed to marshal proto config: %s", err)
 	}
 
-	if len(*pbOutFile) > 0 {
-		f, err := os.Create(*pbOutFile)
+	// if len(*pbOutFile) > 0 {
+	if len(optFile) > 0 {
+		// f, err := os.Create(*pbOutFile)
+		f, err := os.Create(optFile)
 		if err != nil {
-			base.Fatalf("failed to create ptoro file: %s", err)
+			base.Fatalf("failed to create proto file: %s", err)
 		}
 		defer f.Close()
 
