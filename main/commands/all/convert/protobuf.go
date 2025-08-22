@@ -21,7 +21,7 @@ Convert multiple json configs to protobuf.
 
 Arguments:
 
-	-o <file>, -outpbfile <file>
+	-outpbfile <file>
 		Write the ProtoBuf (.pb) file to specified location.
 
 	-d, -debug
@@ -46,8 +46,8 @@ func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 	var optDump bool
 	var optType bool
 
-	cmd.Flag.String(&optFile, "o", "", "")
-	cmd.Flag.String(&optFile, "outpbfile", "", "")
+	optFile = cmd.Flag.String(&optFile, "outpbfile", "")
+	
 	cmd.Flag.BoolVar(&optDump, "d", false, "")
 	cmd.Flag.BoolVar(&optDump, "debug", false, "")
 	cmd.Flag.BoolVar(&optType, "t", false, "")
@@ -85,11 +85,11 @@ func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 	if len(*optFile) > 0 {
 		f, err := os.Create(optFile)
 		if err != nil {
-			return err
+			base.Fatalf("failed to create ptoro file: %s", err)
 		}
 		defer f.Close()
 
-		if err := common.Error2(f.write(bytesConfig)); err!= nil {
+		if _, err := f.Write(bytesConfig); err!= nil {
 			base.Fatalf("failed to write proto file: %s", err)
 		}
 	} else {
