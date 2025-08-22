@@ -82,7 +82,7 @@ func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 	}
 
 	if len(*pbOutFile) > 0 {
-		f, err := os.Create(pbOutFile)
+		f, err := os.Create(*pbOutFile)
 		if err != nil {
 			base.Fatalf("failed to create ptoro file: %s", err)
 		}
