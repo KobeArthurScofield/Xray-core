@@ -42,11 +42,10 @@ Examples:
 
 func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 
-	var optFile string
 	var optDump bool
 	var optType bool
 
-	optFile = cmd.Flag.String("outpbfile", "", "Save proto file directly into file.")
+	pbOutFile = cmd.Flag.String("outpbfile", "", "Save proto file directly into file.")
 	
 	cmd.Flag.BoolVar(&optDump, "d", false, "")
 	cmd.Flag.BoolVar(&optDump, "debug", false, "")
@@ -82,7 +81,7 @@ func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 		base.Fatalf("failed to marshal proto config: %s", err)
 	}
 
-	if len(optFile) > 0 {
+	if len(*pbOutFile) > 0 {
 		f, err := os.Create(optFile)
 		if err != nil {
 			base.Fatalf("failed to create ptoro file: %s", err)
