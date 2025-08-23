@@ -34,8 +34,8 @@ Arguments:
 
 Examples:
 
-    {{.Exec}} convert pb config.json c1.json c2.json c3.json > mix.pb
     {{.Exec}} convert pb -outpbfile output.pb config.json c1.json c2.json c3.json
+    {{.Exec}} convert pb -debug mix.pb
 	`,
 	Run: executeConvertConfigsToProtobuf,
 }
@@ -65,6 +65,10 @@ func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 		base.Fatalf("invalid config list length: %d", len(unnamedArgs))
 	}
 
+	if len(optFile) <= 0 && !optDump {
+		base.Fatalf("-outpbfile not specified.")
+	}
+
 	pbConfig, err := core.LoadConfig("auto", unnamedArgs)
 	if err != nil {
 		base.Fatalf("failed to load config: %s", err)
@@ -79,13 +83,13 @@ func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 		}
 	}
 
-	bytesConfig, err := proto.Marshal(pbConfig)
-	if err != nil {
-		base.Fatalf("failed to marshal proto config: %s", err)
-	}
-
 	// if len(*pbOutFile) > 0 {
 	if len(optFile) > 0 {
+		bytesConfig, err := proto.Marshal(pbConfig)
+		if err != nil {
+			base.Fatalf("failed to marshal proto config: %s", err)
+		}
+
 		// f, err := os.Create(*pbOutFile)
 		f, err := os.Create(optFile)
 		if err != nil {
@@ -95,10 +99,6 @@ func executeConvertConfigsToProtobuf(cmd *base.Command, args []string) {
 
 		if _, err := f.Write(bytesConfig); err!= nil {
 			base.Fatalf("failed to write proto file: %s", err)
-		}
-	} else {
-		if _, err := os.Stdout.Write(bytesConfig); err != nil {
-			base.Fatalf("failed to write proto config: %s", err)
 		}
 	}
 }
