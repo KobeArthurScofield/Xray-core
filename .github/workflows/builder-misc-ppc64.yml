@@ -1,6 +1,6 @@
 name: Test Builder for PPC64/PPC64LE architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20250820
+# Build 20250824
 
 on:
   workflow_dispatch:
@@ -64,7 +64,7 @@ jobs:
           if [[ ${GOOS} == 'windows' ]]; then
             echo 'Building Xray for Windows...'
             go build -o build_assets/xray.exe -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
-            go build -o build_assets/wxray.exe -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+            # go build -o build_assets/wxray.exe -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
           else
             echo 'Building Xray...'
             go build -o build_assets/xray -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags "-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
