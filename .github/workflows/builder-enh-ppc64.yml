@@ -1,6 +1,6 @@
 name: Enhanced Builder for PPC64/PPC64LE architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20250824
+# Build 20250905
 
 on:
   workflow_dispatch:
@@ -46,7 +46,7 @@ jobs:
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
           check-latest: true
