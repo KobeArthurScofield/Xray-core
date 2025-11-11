@@ -1,6 +1,6 @@
 name: Enhanced Builder for ARM64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20250905
+# Build 20251111
 
 on:
   workflow_dispatch:
@@ -87,7 +87,7 @@ jobs:
           mv build_assets Xray-${{ env.ASSET_NAME }}
 
       - name: Upload files to Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Xray-${{ env.ASSET_NAME }}
           path: |
