@@ -1,6 +1,6 @@
 name: Test Builder for AMD64 architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20251111
+# Build 20251122
 
 on:
   workflow_dispatch:
@@ -32,7 +32,7 @@ jobs:
       CGO_ENABLED: 0
     steps:
       - name: Checkout codebase
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: main
 
