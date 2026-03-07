@@ -1,6 +1,6 @@
 name: Enhanced Builder for PPC64/PPC64LE architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20251220
+# Build 20260307
 
 on:
   workflow_dispatch:
@@ -87,16 +87,12 @@ jobs:
         #   openssl dgst -$METHOD $FILE | sed 's/([^)]*)//g' >>$DGST
         # done
 
-      - name: Change the name
-        run: |
-          mv build_assets Xray-${{ env.ASSET_NAME }}
-
       - name: Upload files to Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Xray-${{ env.ASSET_NAME }}
           path: |
-            ./Xray-${{ env.ASSET_NAME }}/*
+            ./build_assets/*
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
