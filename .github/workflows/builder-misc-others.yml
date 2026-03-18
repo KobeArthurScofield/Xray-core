@@ -1,6 +1,6 @@
 name: Test Builder for other architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20260307
+# Build 20260318
 
 on:
   workflow_dispatch:
@@ -18,37 +18,6 @@ jobs:
     strategy:
       matrix:
         include:
-          # BEGIN FreeBSD RISCV64
-          - goos: freebsd
-            goarch: riscv64
-            goriscv64: rva20u64
-          - goos: freebsd
-            goarch: riscv64
-            goriscv64: rva22u64
-          - goos: freebsd
-            goarch: riscv64
-            goriscv64: rva23u64
-          # END FreeBSD RISCV64
-          # BEGIN OpenBSD
-          - goos: openbsd
-            goarch: ppc64
-            goppc64: power8
-          - goos: openbsd
-            goarch: ppc64
-            goppc64: power9
-          - goos: openbsd
-            goarch: ppc64
-            goppc64: power10
-          - goos: openbsd
-            goarch: riscv64
-            goriscv64: rva20u64
-          - goos: openbsd
-            goarch: riscv64
-            goriscv64: rva22u64
-          - goos: openbsd
-            goarch: riscv64
-            goriscv64: rva23u64
-          # END OpenBSD
       fail-fast: false
 
     runs-on: ubuntu-latest
