@@ -1,6 +1,6 @@
 name: Enhanced Builder for PPC64/PPC64LE architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260307
+# Build 20260318
 
 on:
   workflow_dispatch:
@@ -17,13 +17,11 @@ jobs:
       contents: write
     strategy:
       matrix:
-        goos: [windows, freebsd, openbsd, linux, darwin]
+        goos: [windows, linux, darwin]
         goarch: [ppc64, ppc64le]
         goppc64: [power9, power10]
         exclude:
           - goos: windows
-          - goos: freebsd
-          - goos: openbsd
           - goos: darwin
       fail-fast: false
 

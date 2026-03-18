@@ -1,6 +1,6 @@
 name: Enhanced Builder for AMD64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260307
+# Build 20260318
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        goos: [windows, freebsd, openbsd, linux, darwin]
+        goos: [windows, linux, darwin]
         goarch: [amd64]
         goamd64: [v2, v3, v4]
       fail-fast: false

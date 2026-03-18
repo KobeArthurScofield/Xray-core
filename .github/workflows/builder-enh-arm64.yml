@@ -1,6 +1,6 @@
 name: Enhanced Builder for ARM64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260307
+# Build 20260318
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        goos: [windows, freebsd, openbsd, linux, darwin]
+        goos: [windows, linux, darwin]
         goarch: [arm64]
         goarm64: ["v8.2,lse,crypto", "v8.4,lse,crypto", "v9.0,lse,crypto", "v9.2,lse,crypto"]
       fail-fast: false
