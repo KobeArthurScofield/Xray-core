@@ -1,6 +1,6 @@
 name: Enhanced Builder for ARM64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260318
+# Build 20260319
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
       matrix:
         goos: [windows, linux, darwin]
         goarch: [arm64]
-        goarm64: ["v8.2,lse,crypto", "v8.4,lse,crypto", "v9.0,lse,crypto", "v9.2,lse,crypto"]
+        goarm64: ["v8.2", "v8.4", "v9.0", "v9.2"]
       fail-fast: false
 
     runs-on: ubuntu-latest

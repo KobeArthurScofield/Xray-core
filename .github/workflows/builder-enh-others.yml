@@ -1,6 +1,6 @@
 name: Enhanced Builder for other architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260318
+# Build 20260319
 
 on:
   workflow_dispatch:
@@ -21,13 +21,13 @@ jobs:
           # BEGIN ARM64 Specified
           - goos: darwin
             goarch: arm64
-            goarm64: v8.5,lse,crypto
+            goarm64: v8.5
           - goos: darwin
             goarch: arm64
-            goarm64: v8.6,lse,crypto
+            goarm64: v8.6
           - goos: windows
             goarch: arm64
-            goarm64: v8.7,lse,crypto
+            goarm64: v8.7
           # END ARM64 Specified
       fail-fast: false
 
