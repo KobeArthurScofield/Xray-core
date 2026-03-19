@@ -1,6 +1,6 @@
 name: Test Builder for PPC64/PPC64LE architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20260318
+# Build 20260319
 
 on:
   workflow_dispatch:
@@ -25,6 +25,8 @@ jobs:
           - goos: freebsd
           - goos: illumos
           - goos: netbsd
+          - goos: openbsd
+            goarch: ppc64le
           - goos: plan9
           - goos: solaris
           - goos: aix

@@ -1,6 +1,6 @@
 name: Test Builder for other architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20260318
+# Build 20260319
 
 on:
   workflow_dispatch:
@@ -18,6 +18,8 @@ jobs:
     strategy:
       matrix:
         include:
+          - goos: linux
+            goarch: s390x
       fail-fast: false
 
     runs-on: ubuntu-latest
