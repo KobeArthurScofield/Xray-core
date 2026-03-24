@@ -1,6 +1,6 @@
 name: Enhanced Builder for other architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260319-2
+# Build 20260324
 
 on:
   workflow_dispatch:
@@ -19,9 +19,6 @@ jobs:
       matrix:
         include:
           # BEGIN ARM64 Specified
-          - goos: darwin
-            goarch: arm64
-            goarm64: v8.5
           - goos: darwin
             goarch: arm64
             goarm64: v8.6
