@@ -1,6 +1,6 @@
 name: Test Builder for RISCV64 architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20260319-2
+# Build 20260324
 on:
   workflow_dispatch:
   release:
@@ -16,9 +16,8 @@ jobs:
       contents: write
     strategy:
       matrix:
-        goos: [dragonfly, freebsd, illumos, netbsd, openbsd, plan9, solaris, aix]
+        goos: [dragonfly, illumos, netbsd, openbsd, plan9, solaris, aix]
         goarch: [riscv64]
-        goriscv64: [rva20u64, rva22u64, rva23u64]
         exclude:
           - goos: dragonfly
           - goos: illumos
@@ -32,7 +31,6 @@ jobs:
     env:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
-      GORISCV64: ${{ matrix.goriscv64 }}
       CGO_ENABLED: 0
     steps:
       - name: Checkout codebase
@@ -42,8 +40,8 @@ jobs:
 
       - name: Show workflow information
         run: |
-          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GORISCV64"
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GORISCV64: $GORISCV64, RELEASE_NAME: $_NAME"
+          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go

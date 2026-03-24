@@ -1,6 +1,6 @@
 name: Test Builder for AMD64 architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20260319-2
+# Build 20260324
 
 on:
   workflow_dispatch:
@@ -17,9 +17,8 @@ jobs:
       contents: write
     strategy:
       matrix:
-        goos: [dragonfly, freebsd, illumos, netbsd, openbsd, plan9, solaris, aix]
+        goos: [dragonfly, illumos, netbsd, openbsd, plan9, solaris, aix]
         goarch: [amd64]
-        goamd64: [v1, v2, v3, v4]
         exclude:
           - goos: aix
       fail-fast: false
@@ -28,7 +27,6 @@ jobs:
     env:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
-      GOAMD64: ${{ matrix.goamd64 }}
       CGO_ENABLED: 0
     steps:
       - name: Checkout codebase
@@ -38,8 +36,8 @@ jobs:
 
       - name: Show workflow information
         run: |
-          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOAMD64"
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, RELEASE_NAME: $_NAME"
+          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go

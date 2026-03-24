@@ -1,6 +1,6 @@
 name: Test Builder for other architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20260319-2
+# Build 20260324
 
 on:
   workflow_dispatch:
@@ -19,17 +19,13 @@ jobs:
       matrix:
         include:
           - goos: linux
-            goarch: s390x
+            goarch: sparc64
       fail-fast: false
 
     runs-on: ubuntu-latest
     env:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
-      GOAMD64: ${{ matrix.goamd64 }}
-      GOARM64: ${{ matrix.goarm64 }}
-      GORISCV64: ${{ matrix.goriscv64 }}
-      GOPPC64: ${{ matrix.goppc64 }}
       CGO_ENABLED: 0
     steps:
       - name: Checkout codebase
@@ -39,8 +35,8 @@ jobs:
 
       - name: Show workflow information
         run: |
-          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOAMD64$GOARM64$GORISCV64$GOPPC64"
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, GOARM64: $GOARM64, GORISCV64: $GORISCV64, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
+          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go
