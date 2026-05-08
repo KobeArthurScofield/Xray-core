@@ -180,7 +180,7 @@ func main() {
 	}
 
 	gofmtArgs := []string{
-		"-s", "-l", "-e", "-w",
+		"-l", "-e", "-w",
 	}
 
 	goimportsArgs := []string{
