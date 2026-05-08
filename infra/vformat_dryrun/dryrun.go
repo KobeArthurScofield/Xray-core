@@ -90,9 +90,10 @@ func Run(binary string, args []string) ([]byte, error) {
 	return output, nil
 }
 
-func RunMany(binary string, args, files []string) {
+func RunMany(binary string, args, files []string) bool {
 	fmt.Println("Processing with", binary, args, "...")
 
+	var formatRequired := false
 	maxTasks := make(chan struct{}, runtime.NumCPU())
 	for _, file := range files {
 		maxTasks <- struct{}{}
@@ -102,10 +103,12 @@ func RunMany(binary string, args, files []string) {
 				fmt.Println(err)
 			} else if len(output) > 0 {
 				fmt.Println(string(output))
+				formatRequired = true
 			}
 			<-maxTasks
 		}(file)
 	}
+	return formatRequired
 }
 
 func main() {
@@ -196,9 +199,15 @@ func main() {
 	}
 
 	fmt.Println("Checking files thar are not properly formatted...")
-	RunMany(gofmt, gofmtListArgs, rawFilesSlice)
-	RunMany(goimports, goimportsListArgs, rawFilesSlice)
-	RunMany(gofmt, gofmtShowArgs, rawFilesSlice)
-	RunMany(goimports, goimportsShowArgs, rawFilesSlice)
-	fmt.Println("Do NOT forget to commit file changes.")
+	formatRequired       := RunMany(gofmt, gofmtListArgs, rawFilesSlice)
+	formatImportRequired := RunMany(goimports, goimportsListArgs, rawFilesSlice)
+	if formatRequired {
+		RunMany(gofmt, gofmtShowArgs, rawFilesSlice)
+	}
+	if formatImportRequired {
+		RunMany(goimports, goimportsShowArgs, rawFilesSlice)
+	}
+	if (formatRequired || formatImportRequired) {
+		os.Exit(1)
+	}
 }
