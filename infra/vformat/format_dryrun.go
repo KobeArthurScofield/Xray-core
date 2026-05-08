@@ -91,7 +91,7 @@ func Run(binary string, args []string) ([]byte, error) {
 }
 
 func RunMany(binary string, args, files []string) {
-	fmt.Println("Processing...")
+	fmt.Println("Processing with", binary, args, files, "...")
 
 	maxTasks := make(chan struct{}, runtime.NumCPU())
 	for _, file := range files {
