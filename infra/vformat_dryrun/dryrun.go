@@ -183,11 +183,11 @@ func main() {
 	}
 
 	gofmtListArgs := []string{
-		"-l", "-e",
+		"-l",
 	}
 
 	gofmtShowArgs := []string{
-		"-d", "-e",
+		"-d",
 	}
 
 	goimportsListArgs := []string{
