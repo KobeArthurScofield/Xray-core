@@ -66,9 +66,10 @@ jobs:
         run: |
           DIFFFILE=$(gofmt -l ./)
           if [ -n "${DIFFFILE}" ]; then
-            echo "Format problem found. Run 'go fmt -x ./...' or 'gofmt -w ./' to format the go files."
-            echo "Here are the list of files:\n${DIFFFILE}"
-            echo "Here are the formatting problem currently found:"
+            echo "Format problem found. Run 'go fmt -x ./...' or 'gofmt -w ./' to format the go files.\n"
+            echo "Here are the list of files:"
+            echo "${DIFFFILE}"
+            echo "\nHere are the formatting problem currently found:\n"
             gofmt -d ./
             exit 1
           fi
