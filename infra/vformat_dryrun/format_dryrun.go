@@ -1,4 +1,4 @@
-package main_dryrun
+package main
 
 import (
 	"errors"
