@@ -66,6 +66,7 @@ jobs:
         run: |
           go install -v github.com/daixiang0/gci@latest
           go install -v mvdan.cc/gofumpt@latest
+          go run ./infra/vformat/main.go -pwd ./
           go run ./infra/vformat_dryrun/dryrun.go -pwd ./
 
   test:
