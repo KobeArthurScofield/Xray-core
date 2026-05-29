@@ -6,7 +6,7 @@ on:
     types: [opened, synchronize, reopened]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -69,7 +69,6 @@ jobs:
           cache: false
       - name: Check Format
         run: |
-          # go install -v github.com/daixiang0/gci@latest
           go install -v mvdan.cc/gofumpt@latest
           go run ./infra/vformat/main.go -mode dryrun -pwd ./
 
