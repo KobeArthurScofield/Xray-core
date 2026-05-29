@@ -70,7 +70,7 @@ jobs:
       - name: Check Format
         run: |
           go install -v mvdan.cc/gofumpt@latest
-          go run ./infra/vformat/main.go -mode dryrun -pwd ./
+          go run ./infra/vformat/main.go -mode check -pwd ./
 
   test:
     needs: check-assets
