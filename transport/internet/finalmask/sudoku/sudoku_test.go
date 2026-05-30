@@ -169,10 +169,8 @@ func TestSudokuE2ETemp(t *testing.T) {
 
 	results := make([]caseResult, 0, len(cases)*len(modes))
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			for _, mode := range modes {
-				mode := mode
 				t.Run(mode.name, func(t *testing.T) {
 					result := tc.run(t, bin, mode)
 					if mode.name == "prefer_ascii" && result.ASCIIRatio < 0.97 {
@@ -1043,9 +1041,7 @@ func startTCPRelay(t *testing.T, listenPort int, target string) *tcpRelay {
 		target:   target,
 		stopCh:   make(chan struct{}),
 	}
-	r.wg.Add(1)
-	go func() {
-		defer r.wg.Done()
+	r.wg.Go(func() {
 		for {
 			conn, err := ln.Accept()
 			if err != nil {
@@ -1089,7 +1085,7 @@ func startTCPRelay(t *testing.T, listenPort int, target string) *tcpRelay {
 				inner.Wait()
 			}(conn, targetConn, capture)
 		}
-	}()
+	})
 	return r
 }
 
@@ -1143,9 +1139,7 @@ func startUDPRelay(t *testing.T, listenPort, targetPort int) *udpRelay {
 		target: targetAddr,
 		stopCh: make(chan struct{}),
 	}
-	r.wg.Add(1)
-	go func() {
-		defer r.wg.Done()
+	r.wg.Go(func() {
 		buf := make([]byte, 64*1024)
 		for {
 			n, addr, err := conn.ReadFrom(buf)
@@ -1179,7 +1173,7 @@ func startUDPRelay(t *testing.T, listenPort, targetPort int) *udpRelay {
 			r.captureMu.Unlock()
 			_, _ = conn.WriteTo(payload, r.target)
 		}
-	}()
+	})
 	return r
 }
 
@@ -1215,9 +1209,7 @@ func startXOREchoServer(t *testing.T) *xorEchoServer {
 		t.Fatal(err)
 	}
 	s := &xorEchoServer{ln: ln}
-	s.wg.Add(1)
-	go func() {
-		defer s.wg.Done()
+	s.wg.Go(func() {
 		for {
 			conn, err := ln.Accept()
 			if err != nil {
@@ -1233,19 +1225,19 @@ func startXOREchoServer(t *testing.T) *xorEchoServer {
 					if err != nil {
 						return
 					}
-					for i := 0; i < n; i++ {
+					for i := range n {
 						buf[i] ^= 'c'
 					}
 					if _, err := c.Write(buf[:n]); err != nil {
 						return
 					}
-					for i := 0; i < n; i++ {
+					for i := range n {
 						buf[i] ^= 'c'
 					}
 				}
 			}(conn)
 		}
-	}()
+	})
 	return s
 }
 
@@ -1281,9 +1273,7 @@ func startTLSEchoDecoy(t *testing.T, c *cert.Certificate) *tlsDecoy {
 		ln:   tlsLn,
 		done: make(chan struct{}),
 	}
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		for {
 			conn, err := tlsLn.Accept()
 			if err != nil {
@@ -1298,7 +1288,7 @@ func startTLSEchoDecoy(t *testing.T, c *cert.Certificate) *tlsDecoy {
 				_, _ = c.Write([]byte("HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nOK"))
 			}(conn)
 		}
-	}()
+	})
 	return d
 }
 

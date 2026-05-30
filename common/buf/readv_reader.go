@@ -1,5 +1,4 @@
 //go:build !wasm && !openbsd
-// +build !wasm,!openbsd
 
 package buf
 
@@ -102,10 +101,7 @@ func (r *ReadVReader) readMulti() (MultiBuffer, error) {
 		if nBytes <= 0 {
 			break
 		}
-		end := nBytes
-		if end > Size {
-			end = Size
-		}
+		end := min(nBytes, Size)
 		bs[nBuf].end = end
 		nBytes -= end
 		nBuf++

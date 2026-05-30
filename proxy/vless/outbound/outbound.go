@@ -43,7 +43,7 @@ import (
 )
 
 func init() {
-	common.Must(common.RegisterConfig((*Config)(nil), func(ctx context.Context, config interface{}) (interface{}, error) {
+	common.Must(common.RegisterConfig((*Config)(nil), func(ctx context.Context, config any) (any, error) {
 		return New(ctx, config.(*Config))
 	}))
 }
@@ -269,16 +269,16 @@ func (h *Handler) Process(ctx context.Context, link *transport.Link, dialer inte
 				if _, ok := commonConn.Conn.(*encryption.XorConn); ok || !proxy.IsRAWTransportWithoutSecurity(iConn) {
 					ob.CanSpliceCopy = 3 // full-random xorConn / non-RAW transport / another securityConn should not be penetrated
 				}
-				t = reflect.TypeOf(commonConn).Elem()
+				t = reflect.TypeFor[encryption.CommonConn]()
 				p = uintptr(unsafe.Pointer(commonConn))
 			} else if tlsConn, ok := iConn.(*tls.Conn); ok {
-				t = reflect.TypeOf(tlsConn.Conn).Elem()
+				t = reflect.TypeFor[gotls.Conn]()
 				p = uintptr(unsafe.Pointer(tlsConn.Conn))
 			} else if utlsConn, ok := iConn.(*tls.UConn); ok {
-				t = reflect.TypeOf(utlsConn.Conn).Elem()
+				t = reflect.TypeFor[utls.Conn]()
 				p = uintptr(unsafe.Pointer(utlsConn.Conn))
 			} else if realityConn, ok := iConn.(*reality.UConn); ok {
-				t = reflect.TypeOf(realityConn.Conn).Elem()
+				t = reflect.TypeFor[utls.Conn]()
 				p = uintptr(unsafe.Pointer(realityConn.Conn))
 			} else {
 				return errors.New("XTLS only supports TLS and REALITY directly for now.").AtWarning()

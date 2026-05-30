@@ -11,6 +11,7 @@ import (
 	"os"
 	"regexp"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"syscall"
@@ -46,8 +47,8 @@ import (
 )
 
 var tcpHeaderLoader = NewJSONConfigLoader(ConfigCreatorCache{
-	"none": func() interface{} { return new(NoOpConnectionAuthenticator) },
-	"http": func() interface{} { return new(Authenticator) },
+	"none": func() any { return new(NoOpConnectionAuthenticator) },
+	"http": func() any { return new(Authenticator) },
 }, "type", "")
 
 type KCPConfig struct {
@@ -677,10 +678,8 @@ func (c *TLSConfig) Build() (proto.Message, error) {
 		config.NextProtocol = []string(*c.ALPN)
 	}
 	if len(config.NextProtocol) > 1 {
-		for _, p := range config.NextProtocol {
-			if tls.IsFromMitm(p) {
-				return nil, errors.New(`only one element is allowed in "alpn" when using "fromMitm" in it`)
-			}
+		if slices.ContainsFunc(config.NextProtocol, tls.IsFromMitm) {
+			return nil, errors.New(`only one element is allowed in "alpn" when using "fromMitm" in it`)
 		}
 	}
 	if c.CurvePreferences != nil && len(*c.CurvePreferences) > 0 {
@@ -1050,7 +1049,7 @@ func (h *HappyEyeballsConfig) UnmarshalJSON(data []byte) error {
 
 type SocketConfig struct {
 	Mark                  int32                  `json:"mark"`
-	TFO                   interface{}            `json:"tcpFastOpen"`
+	TFO                   any                    `json:"tcpFastOpen"`
 	TProxy                string                 `json:"tproxy"`
 	AcceptProxyProtocol   bool                   `json:"acceptProxyProtocol"`
 	DomainStrategy        string                 `json:"domainStrategy"`
@@ -1230,20 +1229,20 @@ var (
 	customVarNamePattern = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
 
 	tcpmaskLoader = NewJSONConfigLoader(ConfigCreatorCache{
-		"header-custom": func() interface{} { return new(HeaderCustomTCP) },
-		"fragment":      func() interface{} { return new(FragmentMask) },
-		"sudoku":        func() interface{} { return new(Sudoku) },
+		"header-custom": func() any { return new(HeaderCustomTCP) },
+		"fragment":      func() any { return new(FragmentMask) },
+		"sudoku":        func() any { return new(Sudoku) },
 	}, "type", "settings")
 
 	udpmaskLoader = NewJSONConfigLoader(ConfigCreatorCache{
-		"header-custom": func() interface{} { return new(HeaderCustomUDP) },
-		"mkcp-legacy":   func() interface{} { return new(MkcpLegacy) },
-		"noise":         func() interface{} { return new(NoiseMask) },
-		"salamander":    func() interface{} { return new(Salamander) },
-		"sudoku":        func() interface{} { return new(Sudoku) },
-		"xdns":          func() interface{} { return new(Xdns) },
-		"xicmp":         func() interface{} { return new(Xicmp) },
-		"realm":         func() interface{} { return new(Realm) },
+		"header-custom": func() any { return new(HeaderCustomUDP) },
+		"mkcp-legacy":   func() any { return new(MkcpLegacy) },
+		"noise":         func() any { return new(NoiseMask) },
+		"salamander":    func() any { return new(Salamander) },
+		"sudoku":        func() any { return new(Sudoku) },
+		"xdns":          func() any { return new(Xdns) },
+		"xicmp":         func() any { return new(Xicmp) },
+		"realm":         func() any { return new(Realm) },
 	}, "type", "settings")
 )
 

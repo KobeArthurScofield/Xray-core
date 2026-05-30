@@ -70,11 +70,11 @@ func parseBasicAuth(auth string) (username, password string, ok bool) {
 		return
 	}
 	cs := string(c)
-	s := strings.IndexByte(cs, ':')
-	if s < 0 {
+	before, after, ok0 := strings.Cut(cs, ":")
+	if !ok0 {
 		return
 	}
-	return cs[:s], cs[s+1:], true
+	return before, after, true
 }
 
 type readerOnly struct {
@@ -346,7 +346,7 @@ func readResponseAndHandle100Continue(r *bufio.Reader, req *http.Request, writer
 }
 
 func init() {
-	common.Must(common.RegisterConfig((*ServerConfig)(nil), func(ctx context.Context, config interface{}) (interface{}, error) {
+	common.Must(common.RegisterConfig((*ServerConfig)(nil), func(ctx context.Context, config any) (any, error) {
 		return NewServer(ctx, config.(*ServerConfig))
 	}))
 }

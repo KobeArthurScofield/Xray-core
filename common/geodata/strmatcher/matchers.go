@@ -258,7 +258,7 @@ func CompositeMatches(matches [][]uint32) []uint32 {
 		return slices.Clone(matches[0])
 	default:
 		result := make([]uint32, 0, 5)
-		for i := 0; i < len(matches); i++ {
+		for i := range matches {
 			result = append(result, matches[i]...)
 		}
 		return result

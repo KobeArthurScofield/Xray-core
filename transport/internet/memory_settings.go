@@ -9,9 +9,9 @@ import (
 type MemoryStreamConfig struct {
 	Destination      *net.Destination
 	ProtocolName     string
-	ProtocolSettings interface{}
+	ProtocolSettings any
 	SecurityType     string
-	SecuritySettings interface{}
+	SecuritySettings any
 	TcpmaskManager   *finalmask.TcpmaskManager
 	UdpmaskManager   *finalmask.UdpmaskManager
 	QuicParams       *QuicParams

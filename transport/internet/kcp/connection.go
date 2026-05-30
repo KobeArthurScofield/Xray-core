@@ -6,6 +6,7 @@ import (
 	"io"
 	"net"
 	"runtime"
+	"slices"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -27,12 +28,7 @@ type State int32
 
 // Is returns true if current State is one of the candidates.
 func (s State) Is(states ...State) bool {
-	for _, state := range states {
-		if s == state {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(states, s)
 }
 
 const (
@@ -87,10 +83,7 @@ func (info *RoundTripInfo) Update(rtt uint32, current uint32) {
 			delta = info.srtt - rtt
 		}
 		info.variation = (3*info.variation + delta) / 4
-		info.srtt = (7*info.srtt + rtt) / 8
-		if info.srtt < info.minRtt {
-			info.srtt = info.minRtt
-		}
+		info.srtt = max((7*info.srtt+rtt)/8, info.minRtt)
 	}
 	var rto uint32
 	if info.minRtt < 4*info.variation {
@@ -281,7 +274,7 @@ func (c *Connection) ReadMultiBuffer() (buf.MultiBuffer, error) {
 }
 
 func (c *Connection) waitForDataInput() error {
-	for i := 0; i < 16; i++ {
+	for range 16 {
 		select {
 		case <-c.dataInput.Wait():
 			return nil
@@ -335,7 +328,7 @@ func (c *Connection) Read(b []byte) (int, error) {
 }
 
 func (c *Connection) waitForDataOutput() error {
-	for i := 0; i < 16; i++ {
+	for range 16 {
 		select {
 		case <-c.dataOutput.Wait():
 			return nil

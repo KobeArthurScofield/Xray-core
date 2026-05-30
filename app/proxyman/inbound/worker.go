@@ -149,7 +149,7 @@ func (w *tcpWorker) Start() error {
 }
 
 func (w *tcpWorker) Close() error {
-	var errs []interface{}
+	var errs []any
 	if w.hub != nil {
 		if err := common.Close(w.hub); err != nil {
 			errs = append(errs, err)
@@ -434,7 +434,7 @@ func (w *udpWorker) Close() error {
 	w.Lock()
 	defer w.Unlock()
 
-	var errs []interface{}
+	var errs []any
 
 	if w.hub != nil {
 		if err := w.hub.Close(); err != nil {
@@ -535,7 +535,7 @@ func (w *dsWorker) Start() error {
 }
 
 func (w *dsWorker) Close() error {
-	var errs []interface{}
+	var errs []any
 	if w.hub != nil {
 		if err := common.Close(w.hub); err != nil {
 			errs = append(errs, err)

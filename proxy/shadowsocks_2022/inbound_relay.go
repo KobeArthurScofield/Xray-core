@@ -29,7 +29,7 @@ import (
 )
 
 func init() {
-	common.Must(common.RegisterConfig((*RelayServerConfig)(nil), func(ctx context.Context, config interface{}) (interface{}, error) {
+	common.Must(common.RegisterConfig((*RelayServerConfig)(nil), func(ctx context.Context, config any) (any, error) {
 		return NewRelayServer(ctx, config.(*RelayServerConfig))
 	}))
 }

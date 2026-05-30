@@ -258,7 +258,7 @@ func toNetIpAddr(addr net.Address) netip.Addr {
 	} else {
 		ip := addr.IP()
 		arr := [16]byte{}
-		for i := 0; i < 16; i++ {
+		for i := range 16 {
 			arr[i] = ip[i]
 		}
 		return netip.AddrFrom16(arr)

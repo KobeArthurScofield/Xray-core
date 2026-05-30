@@ -46,7 +46,7 @@ import (
 )
 
 func init() {
-	common.Must(common.RegisterConfig((*Config)(nil), func(ctx context.Context, config interface{}) (interface{}, error) {
+	common.Must(common.RegisterConfig((*Config)(nil), func(ctx context.Context, config any) (any, error) {
 		var dc dns.Client
 		if err := core.RequireFeatures(ctx, func(d dns.Client) error {
 			dc = d
@@ -384,10 +384,9 @@ func (h *Handler) Process(ctx context.Context, network net.Network, connection s
 					firstBytes := first.Bytes()
 					for i := 4; i <= 8; i++ { // 5 -> 9
 						if firstBytes[i] == '/' && firstBytes[i-1] == ' ' {
-							search := len(firstBytes)
-							if search > 64 {
-								search = 64 // up to about 60
-							}
+							search := min(len(firstBytes),
+								// up to about 60
+								64)
 							for j := i + 1; j < search; j++ {
 								k := firstBytes[j]
 								if k == '\r' || k == '\n' { // avoid logging \r or \n
@@ -566,16 +565,16 @@ func (h *Handler) Process(ctx context.Context, network net.Network, connection s
 					if _, ok := commonConn.Conn.(*encryption.XorConn); ok || !proxy.IsRAWTransportWithoutSecurity(iConn) {
 						inbound.CanSpliceCopy = 3 // full-random xorConn / non-RAW transport / another securityConn should not be penetrated
 					}
-					t = reflect.TypeOf(commonConn).Elem()
+					t = reflect.TypeFor[encryption.CommonConn]()
 					p = uintptr(unsafe.Pointer(commonConn))
 				} else if tlsConn, ok := iConn.(*tls.Conn); ok {
 					if tlsConn.ConnectionState().Version != gotls.VersionTLS13 {
 						return errors.New(`failed to use `+requestAddons.Flow+`, found outer tls version `, tlsConn.ConnectionState().Version).AtWarning()
 					}
-					t = reflect.TypeOf(tlsConn.Conn).Elem()
+					t = reflect.TypeFor[gotls.Conn]()
 					p = uintptr(unsafe.Pointer(tlsConn.Conn))
 				} else if realityConn, ok := iConn.(*reality.Conn); ok {
-					t = reflect.TypeOf(realityConn.Conn).Elem()
+					t = reflect.TypeFor[reality.Conn]()
 					p = uintptr(unsafe.Pointer(realityConn.Conn))
 				} else {
 					return errors.New("XTLS only supports TLS and REALITY directly for now.").AtWarning()

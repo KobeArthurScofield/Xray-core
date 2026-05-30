@@ -37,7 +37,7 @@ func NewMetricsHandler(ctx context.Context, config *Config) (*MetricsHandler, er
 		c.statsManager = sm
 		c.ohm = om
 	}))
-	expvar.Publish("stats", expvar.Func(func() interface{} {
+	expvar.Publish("stats", expvar.Func(func() any {
 		resp := map[string]map[string]map[string]int64{
 			"inbound":  {},
 			"outbound": {},
@@ -57,7 +57,7 @@ func NewMetricsHandler(ctx context.Context, config *Config) (*MetricsHandler, er
 		})
 		return resp
 	}))
-	expvar.Publish("observatory", expvar.Func(func() interface{} {
+	expvar.Publish("observatory", expvar.Func(func() any {
 		if c.observatory == nil {
 			common.Must(core.RequireFeatures(ctx, func(observatory extension.Observatory) error {
 				c.observatory = observatory
@@ -80,7 +80,7 @@ func NewMetricsHandler(ctx context.Context, config *Config) (*MetricsHandler, er
 	return c, nil
 }
 
-func (p *MetricsHandler) Type() interface{} {
+func (p *MetricsHandler) Type() any {
 	return (*MetricsHandler)(nil)
 }
 
@@ -127,7 +127,7 @@ func (p *MetricsHandler) Close() error {
 }
 
 func init() {
-	common.Must(common.RegisterConfig((*Config)(nil), func(ctx context.Context, cfg interface{}) (interface{}, error) {
+	common.Must(common.RegisterConfig((*Config)(nil), func(ctx context.Context, cfg any) (any, error) {
 		return NewMetricsHandler(ctx, cfg.(*Config))
 	}))
 }

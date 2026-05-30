@@ -36,7 +36,7 @@ func (d *TestDispatcher) Close() error {
 	return nil
 }
 
-func (*TestDispatcher) Type() interface{} {
+func (*TestDispatcher) Type() any {
 	return routing.DispatcherType()
 }
 
@@ -74,7 +74,7 @@ func TestSameDestinationDispatching(t *testing.T) {
 	})
 
 	dispatcher.Dispatch(ctx, dest, b)
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		dispatcher.Dispatch(ctx, dest, b)
 	}
 
