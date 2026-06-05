@@ -1,6 +1,6 @@
 name: Test Builder for RISCV64 architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20260324
+# Build 20260604
 on:
   workflow_dispatch:
   release:
@@ -16,15 +16,12 @@ jobs:
       contents: write
     strategy:
       matrix:
-        goos: [dragonfly, illumos, netbsd, openbsd, plan9, solaris, aix]
+        goos: [illumos, netbsd, openbsd, plan9]
         goarch: [riscv64]
         exclude:
-          - goos: dragonfly
           - goos: illumos
           - goos: netbsd
           - goos: plan9
-          - goos: solaris
-          - goos: aix
       fail-fast: false
 
     runs-on: ubuntu-latest
