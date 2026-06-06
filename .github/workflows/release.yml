@@ -293,14 +293,15 @@ jobs:
             mv resources/wintun/LICENSE.txt build_assets/LICENSE-WINTUN.txt
           fi
           if [[ ${GOOS} == 'windows' ]]; then
-            echo 'Adding WinDivert into packages'
             if [[ ${GOARCH} == 'amd64' ]]; then
+              echo 'Adding WinDivert into packages'
               cp .github/build/compliance/THIRD_PARTY_NOTICE_WINDIVERT.txt build_assets/
               mv resources/windivert/x64/* build_assets/
               mv resources/windivert/LICENSE-WINDIVERT.txt build_assets/
               mv resources/windivert/LICENSE-WINDIVERT.LESSER.txt build_assets/
             fi
             if [[ ${GOARCH} == '386' ]]; then
+              echo 'Adding WinDivert into packages'
               cp .github/build/compliance/THIRD_PARTY_NOTICE_WINDIVERT.txt build_assets/
               mv resources/windivert/x86/* build_assets/
               mv resources/windivert/LICENSE-WINDIVERT.txt build_assets/
