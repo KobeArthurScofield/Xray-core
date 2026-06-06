@@ -67,7 +67,6 @@ jobs:
             echo -e "Checking if WinDivert.dll for ${INFO[0]} exists..."
             if [ -s "./resources/windivert/${INFO[0]}/WinDivert.dll" ]; then
                 echo -e "WinDivert.dll for ${INFO[0]} exists"
-                continue
             else
                 echo -e "WinDivert.dll for ${INFO[0]} is missing"
                 echo "missing=true" >> $GITHUB_OUTPUT
@@ -76,7 +75,6 @@ jobs:
             echo -e "Checking if WinDivert${INFO[1]}.sys for ${INFO[0]} exists..."
             if [ -s "./resources/windivert/${INFO[0]}/WinDivert${INFO[1]}.sys" ]; then
                 echo -e "WinDivert${INFO[1]}.sys for ${INFO[0]} exists"
-                continue
             else
                 echo -e "WinDivert${INFO[1]}.sys for ${INFO[0]} is missing"
                 echo "missing=true" >> $GITHUB_OUTPUT
