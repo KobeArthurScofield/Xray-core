@@ -285,12 +285,10 @@ jobs:
             echo 'Adding WinDivert into packages'
             cp .github/build/compliance/THIRD_PARTY_NOTICE_WINDIVERT.txt build_assets/
             if [[ ${GOARCH} == 'amd64' ]]; then
-              mv resources/windivert/x64/*.dll build_assets/
-              mv resources/windivert/x64/*.sys build_assets/
+              mv resources/windivert/x64/* build_assets/
             fi
             if [[ ${GOARCH} == '386' ]]; then
-              mv resources/windivert/x86/*.dll build_assets/
-              mv resources/windivert/x86/*.sys build_assets/
+              mv resources/windivert/x86/* build_assets/
             fi
             mv resources/windivert/LICENSE-WINDIVERT.txt build_assets/
             mv resources/windivert/LICENSE-WINDIVERT.LESSER.txt build_assets/
