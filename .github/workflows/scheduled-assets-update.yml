@@ -198,11 +198,11 @@ jobs:
                 unzip -u ${FILENAME} -d ./
                 mkdir resources/windivert
                 mkdir resources/windivert/x64
-                mv ${FILENAME}/x64/WinDivert.dll resources/windivert/x64
-                mv ${FILENAME}/x64/WinDivert64.sys resources/windivert/x64
+                mv WinDivert-${ASSETVER}-A/x64/WinDivert.dll resources/windivert/x64
+                mv WinDivert-${ASSETVER}-A/x64/WinDivert64.sys resources/windivert/x64
                 mkdir resources/windivert/x86
-                mv ${FILENAME}/x86/WinDivert.dll resources/windivert/x86
-                mv ${FILENAME}/x86/WinDivert32.sys resources/windivert/x86
+                mv WinDivert-${ASSETVER}-A/x86/WinDivert.dll resources/windivert/x86
+                mv WinDivert-${ASSETVER}-A/x86/WinDivert32.sys resources/windivert/x86
                 echo -e "Downloading License..."
                 curl -L "https://www.gnu.org/licenses/gpl-3.0.txt" -o "LICENSE-WINDIVERT.txt"
                 curl -L "https://www.gnu.org/licenses/lgpl-3.0.txt" -o "LICENSE-WINDIVERT.LESSER.txt"
