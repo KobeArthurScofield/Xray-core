@@ -1,0 +1,24 @@
+Third-Party Notice: WinDivert
+
+This distribution contains unmodified official precompiled
+and pre-signed WinDivert binaries.
+
+Project:
+WinDivert
+
+Copyright:
+Copyright (C) Basil 2011-2022
+
+Redistribution License:
+GNU Lesser General Public License v3.0 (LGPLv3)
+
+Source:
+https://github.com/basil00/WinDivert
+
+Notes:
+WinDivert is an optional runtime-loaded component used only
+for rawpacket finalmask on Windows platforms on x86
+platform or on x86-64 platform.
+
+This distribution redistributes WinDivert under the LGPLv3
+license option provided by the upstream project.

@@ -25,6 +25,12 @@ jobs:
           path: resources
           key: xray-wintun-
 
+      - name: Restore WinDivert Cache
+        uses: actions/cache/restore@v5
+        with:
+          path: resources
+          key: xray-windivert-
+
       - name: Check Assets Existence
         id: check-assets
         run: |
@@ -51,6 +57,30 @@ jobs:
               echo -e "wintun.dll for ${ARCHITECTURE} is missing."
               echo "missing=true" >> $GITHUB_OUTPUT
               break
+            fi
+          done
+          LIST=('x64 64' 'x86 32')
+          for ARCHITECTURE in "${LIST[@]}"
+          do
+            INFO=($(echo $i | awk 'BEGIN{FS=" ";OFS=" "} {print $1,$2}'))
+            FILE_PATH="resources/windivert/${INFO[0]}/WinDivert.dll"
+            echo -e "Checking if WinDivert.dll for ${INFO[0]} exists..."
+            if [ -s "./resources/windivert/${INFO[0]}/WinDivert.dll" ]; then
+                echo -e "WinDivert.dll for ${INFO[0]} exists"
+                continue
+            else
+                echo -e "WinDivert.dll for ${INFO[0]} is missing"
+                missing=true
+                break
+            fi
+            echo -e "Checking if WinDivert${INFO[1]}.sys for ${INFO[0]} exists..."
+            if [ -s "./resources/windivert/${INFO[0]}/WinDivert${INFO[1]}.sys" ]; then
+                echo -e "WinDivert${INFO[1]}.sys for ${INFO[0]} exists"
+                continue
+            else
+                echo -e "WinDivert${INFO[1]}.sys for ${INFO[0]} is missing"
+                missing=true
+                break
             fi
           done
 
@@ -146,6 +176,20 @@ jobs:
               mv resources/wintun/bin/x86/wintun.dll build_assets/
             fi
             mv resources/wintun/LICENSE.txt build_assets/LICENSE-WINTUN.txt
+          fi
+          if [[ ${GOOS} == 'windows' ]]; then
+            echo 'Adding WinDivert into packages'
+            cp .github/build/compliance/THIRD_PARTY_NOTICE_WINDIVERT.txt build_assets/
+            if [[ ${GOARCH} == 'amd64' ]]; then
+              mv resources/windivert/x64/*.dll build_assets/
+              mv resources/windivert/x64/*.sys build_assets/
+            fi
+            if [[ ${GOARCH} == '386' ]]; then
+              mv resources/windivert/x86/*.dll build_assets/
+              mv resources/windivert/x86/*.sys build_assets/
+            fi
+            mv resources/windivert/LICENSE-WINDIVERT.txt build_assets/
+            mv resources/windivert/LICENSE-WINDIVERT.LESSER.txt build_assets/
           fi
 
       - name: Copy README.md & LICENSE

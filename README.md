@@ -229,6 +229,7 @@ CGO_ENABLED=0 go build -o xray -trimpath -buildvcs=false -gcflags="-l=4" -ldflag
 These components include:
 
 - **Wintun**: A TUN library and virtual NIC driver for Windows, binary distributed under **Prebuilt Binaries License** bundled from wintun.net. This component is used by TUN inbound on Windows.
+- **WinDivert**: A package inception library and WFP driver for Windows, binaries distributed under **GNU Lesser General Public License 3.0**. This component is used by rawpacket finalmasks on Windows.
 
 ## Stargazers over time
 

@@ -135,3 +135,88 @@ jobs:
         with:
           path: resources
           key: xray-wintun-${{ github.sha }}-${{ github.run_number }}
+
+  windivert:
+    if: github.event.schedule == '30 22 * * *' || github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      ASSETVER: 2.2.2
+      ASSETHASH: 63cb41763bb4b20f600b6de04e991a9c2be73279e317d4d82f237b150c5f3f15
+    steps:
+      - name: Restore WinDivert Cache
+        uses: actions/cache/restore@v5
+        with:
+          path: resources
+          key: xray-windivert-
+
+      - name: Force downloading if run manually or on file update
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+        run: |
+          echo "FORCE_UPDATE=true" >> $GITHUB_ENV
+
+      - name: Update WinDivert
+        id: update
+        uses: nick-fields/retry@v4
+        with:
+          timeout_minutes: 60
+          retry_wait_seconds: 60
+          max_attempts: 60
+          command: |
+            [ -d 'resources' ] || mkdir resources
+            LIST=('x64 64' 'x86 32')
+            for ARCHITECTURE in "${LIST[@]}"
+            do
+              INFO=($(echo $i | awk 'BEGIN{FS=" ";OFS=" "} {print $1,$2}'))
+              FILE_PATH="resources/windivert/${INFO[0]}/WinDivert.dll"
+              echo -e "Checking if WinDivert.dll for ${INFO[0]} exists..."
+              if [ -s "./resources/windivert/${INFO[0]}/WinDivert.dll" ]; then
+                  echo -e "WinDivert.dll for ${INFO[0]} exists"
+                  continue
+              else
+                  echo -e "WinDivert.dll for ${INFO[0]} is missing"
+                  missing=true
+              fi
+              echo -e "Checking if WinDivert${INFO[1]}.sys for ${INFO[0]} exists..."
+              if [ -s "./resources/windivert/${INFO[0]}/WinDivert${INFO[1]}.sys" ]; then
+                  echo -e "WinDivert${INFO[1]}.sys for ${INFO[0]} exists"
+                  continue
+              else
+                  echo -e "WinDivert${INFO[1]}.sys for ${INFO[0]} is missing"
+                  missing=true
+              fi
+            done
+            if [[ -v FORCE_UPDATE ]]; then
+              missing=true
+            fi
+            if [[ "$missing" == true ]]; then
+              FILENAME=WinDivert-${ASSETVER}-A.zip
+              DOWNLOAD_FILE=${FILENAME}
+              echo -e "Downloading https://github.com/basil00/WinDivert/releases/tag/v${ASSETVER}/${DOWNLOAD_FILE}..."
+              curl -L "https://github.com/basil00/WinDivert/releases/tag/v${ASSETVER}/${DOWNLOAD_FILE}" -o "${FILENAME}"
+              if [[ "$(sha256sum "./${FILENAME}" | awk -F ' ' '{print $1}')" == "${ASSETHASH}" ]]; then
+                echo -e "Unpacking WinDivert..."
+                unzip -u ${FILENAME} -d ./
+                mkdir resources/windivert
+                mkdir resources/windivert/x64
+                mv ${FILENAME}/x64/*.dll resources/windivert/x64
+                mv ${FILENAME}/x64/*.sys resources/windivert/x64
+                mkdir resources/windivert/x86
+                mv ${FILENAME}/x86/*.dll resources/windivert/x86
+                mv ${FILENAME}/x86/*.sys resources/windivert/x86
+                echo -e "Downloading License..."
+                curl -L "https://www.gnu.org/licenses/gpl-3.0.txt" -o "LICENSE-WINDIVERT.txt"
+                curl -L "https://www.gnu.org/licenses/lgpl-3.0.txt" -o "LICENSE-WINDIVERT.LESSER.txt"
+                cp LICENSE-*.txt resources/windivert
+                echo "unhit=true" >> $GITHUB_OUTPUT
+              else
+                echo -e "Digest of ${FILENAME} mismatch."
+                exit 1
+              fi
+            fi
+
+      - name: Save WinDivert Cache
+        uses: actions/cache/save@v5
+        if: ${{ steps.update.outputs.unhit }}
+        with:
+          path: resources
+          key: xray-windivert-${{ github.sha }}-${{ github.run_number }}
