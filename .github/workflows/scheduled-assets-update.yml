@@ -191,8 +191,9 @@ jobs:
             if [[ "$missing" == true ]]; then
               FILENAME=WinDivert-${ASSETVER}-A.zip
               DOWNLOAD_FILE=${FILENAME}
+              https://github.com/basil00/WinDivert/releases/download/v2.2.2/WinDivert-2.2.2-A.zip
               echo -e "Downloading https://github.com/basil00/WinDivert/releases/download/v${ASSETVER}/${DOWNLOAD_FILE}..."
-              curl -L "https://github.com/basil00/WinDivert/releases/tag/v${ASSETVER}/${DOWNLOAD_FILE}" -o "${FILENAME}"
+              curl -L "https://github.com/basil00/WinDivert/releases/releases/v${ASSETVER}/${DOWNLOAD_FILE}" -o "${FILENAME}"
               if [[ "$(sha256sum "./${FILENAME}" | awk -F ' ' '{print $1}')" == "${ASSETHASH}" ]]; then
                 echo -e "Unpacking WinDivert..."
                 unzip -u ${FILENAME} -d ./
