@@ -62,7 +62,7 @@ jobs:
           LIST=('x64 64' 'x86 32')
           for ARCHITECTURE in "${LIST[@]}"
           do
-            INFO=($(echo $i | awk 'BEGIN{FS=" ";OFS=" "} {print $1,$2}'))
+            INFO=($(echo $ARCHITECTURE | awk 'BEGIN{FS=" ";OFS=" "} {print $1,$2}'))
             FILE_PATH="resources/windivert/${INFO[0]}/WinDivert.dll"
             echo -e "Checking if WinDivert.dll for ${INFO[0]} exists..."
             if [ -s "./resources/windivert/${INFO[0]}/WinDivert.dll" ]; then
@@ -70,7 +70,7 @@ jobs:
                 continue
             else
                 echo -e "WinDivert.dll for ${INFO[0]} is missing"
-                missing=true
+                echo "missing=true" >> $GITHUB_OUTPUT
                 break
             fi
             echo -e "Checking if WinDivert${INFO[1]}.sys for ${INFO[0]} exists..."
@@ -79,7 +79,7 @@ jobs:
                 continue
             else
                 echo -e "WinDivert${INFO[1]}.sys for ${INFO[0]} is missing"
-                missing=true
+                echo "missing=true" >> $GITHUB_OUTPUT
                 break
             fi
           done
@@ -159,6 +159,12 @@ jobs:
         with:
           path: resources
           key: xray-wintun-
+
+      - name: Restore WinDivert Cache
+        uses: actions/cache/restore@v5
+        with:
+          path: resources
+          key: xray-windivert-
 
       - name: Add additional assets into package
         run: |

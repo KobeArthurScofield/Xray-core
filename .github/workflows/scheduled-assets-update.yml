@@ -166,7 +166,7 @@ jobs:
             LIST=('x64 64' 'x86 32')
             for ARCHITECTURE in "${LIST[@]}"
             do
-              INFO=($(echo $i | awk 'BEGIN{FS=" ";OFS=" "} {print $1,$2}'))
+              INFO=($(echo $ARCHITECTURE | awk 'BEGIN{FS=" ";OFS=" "} {print $1,$2}'))
               FILE_PATH="resources/windivert/${INFO[0]}/WinDivert.dll"
               echo -e "Checking if WinDivert.dll for ${INFO[0]} exists..."
               if [ -s "./resources/windivert/${INFO[0]}/WinDivert.dll" ]; then
