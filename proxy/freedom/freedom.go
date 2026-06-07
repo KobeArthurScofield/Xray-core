@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/rand"
 	"io"
-	"strings"
 	"time"
 
 	"github.com/pires/go-proxyproto"
