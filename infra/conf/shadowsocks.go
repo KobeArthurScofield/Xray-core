@@ -145,7 +145,6 @@ func (v *ShadowsocksClientConfig) Build() (proto.Message, error) {
 
 	if len(v.Servers) == 1 {
 		server := v.Servers[0]
-		}
 	}
 
 	config := new(shadowsocks.ClientConfig)
