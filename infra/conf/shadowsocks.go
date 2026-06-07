@@ -143,10 +143,6 @@ func (v *ShadowsocksClientConfig) Build() (proto.Message, error) {
 		return nil, errors.New(`Shadowsocks settings: "servers" should have one and only one member. Multiple endpoints in "servers" should use multiple Shadowsocks outbounds and routing balancer instead`)
 	}
 
-	if len(v.Servers) == 1 {
-		server := v.Servers[0]
-	}
-
 	config := new(shadowsocks.ClientConfig)
 	for _, server := range v.Servers {
 		if server.Address == nil {
