@@ -12,6 +12,9 @@ Copyright (C) 2018-2021 WireGuard LLC. All Rights Reserved.
 Redistribution License:
 Prebuilt Binaries License (PBL) from Wintun
 
+Component(s):
+wintun.dll
+
 Source:
 https://www.wintun.net/
 

@@ -12,6 +12,11 @@ Copyright (C) Basil 2011-2022
 Redistribution License:
 GNU Lesser General Public License v3.0 (LGPLv3)
 
+Component(s):
+WinDivert.dll
+WinDivert64.sys
+WinDivert32.sys
+
 Source:
 https://github.com/basil00/WinDivert
 
