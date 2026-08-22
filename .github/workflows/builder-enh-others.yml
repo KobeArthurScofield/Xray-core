@@ -1,6 +1,6 @@
 name: Enhanced Builder for other architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260324
+# Build 20260822
 
 on:
   workflow_dispatch:
@@ -37,6 +37,7 @@ jobs:
       GORISCV64: ${{ matrix.goriscv64 }}
       GOPPC64: ${{ matrix.goppc64 }}
       CGO_ENABLED: 0
+      GOFIPS140: certified
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v6
@@ -53,6 +54,7 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
+          go-download-base-url: 'https://aka.ms/golang/release/latest'
           check-latest: true
 
       - name: Get project dependencies
