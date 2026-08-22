@@ -1,6 +1,6 @@
 name: Enhanced Builder for RISCV64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260324
+# Build 20260822
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
       matrix:
         goos: [windows, linux, darwin, freebsd]
         goarch: [riscv64]
-        goriscv64: [rva22u64, rva23u64]
+        goriscv64: [rva20u64, rva22u64, rva23u64]
         exclude:
           - goos: windows
           - goos: darwin
@@ -31,6 +31,7 @@ jobs:
       GOARCH: ${{ matrix.goarch }}
       GORISCV64: ${{ matrix.goriscv64 }}
       CGO_ENABLED: 0
+      GOFIPS140: certified
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v6

@@ -1,6 +1,6 @@
 name: Enhanced Builder for PPC64/PPC64LE architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260324
+# Build 20260822
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
       matrix:
         goos: [windows, linux, darwin, freebsd]
         goarch: [ppc64, ppc64le]
-        goppc64: [power9, power10]
+        goppc64: [power8, power9, power10]
         exclude:
           - goos: windows
           - goos: darwin
@@ -32,6 +32,7 @@ jobs:
       GOARCH: ${{ matrix.goarch }}
       GOPPC64: ${{ matrix.goppc64 }}
       CGO_ENABLED: 0
+      GOFIPS140: certified
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v6
