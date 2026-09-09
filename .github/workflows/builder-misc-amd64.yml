@@ -1,6 +1,6 @@
 name: Test Builder for AMD64 architecture
 # For OS and architecture comnbinations that does not supported by official reposity
-# Build 20260604
+# Build 20260909
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
       matrix:
         goos: [illumos, netbsd, openbsd, plan9]
         goarch: [amd64]
-        exclude:
+        #exclude:
       fail-fast: false
 
     runs-on: ubuntu-latest
