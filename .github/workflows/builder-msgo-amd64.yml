@@ -1,6 +1,6 @@
-name: Enhanced Builder for ARM64 architecture
+name: Microsoft Go Builder for AMD64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260822
+# Build 20260909
 
 on:
   workflow_dispatch:
@@ -8,9 +8,9 @@ on:
     types: [published]
   push:
     branches:
-      - builder-enhance
+      - builder-msgo
     paths:
-      - ".github/workflows/builder-enh-arm64.yml"
+      - ".github/workflows/builder-msgo-amd64.yml"
 jobs:
   build:
     permissions:
@@ -18,15 +18,15 @@ jobs:
     strategy:
       matrix:
         goos: [windows, linux, darwin, freebsd]
-        goarch: [arm64]
-        goarm64: ["v8.0", "v8.2", "v8.4", "v9.0", "v9.2"]
+        goarch: [amd64]
+        goamd64: [v1, v2, v3, v4]
       fail-fast: false
 
     runs-on: ubuntu-latest
     env:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
-      GOARM64: ${{ matrix.goarm64 }}
+      GOAMD64: ${{ matrix.goamd64 }}
       CGO_ENABLED: 0
       GOFIPS140: certified
     steps:
@@ -37,8 +37,8 @@ jobs:
 
       - name: Show workflow information
         run: |
-          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOARM64"
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOARM64: $GOARM64, RELEASE_NAME: $_NAME"
+          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOAMD64"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go

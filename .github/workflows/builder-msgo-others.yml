@@ -1,6 +1,6 @@
-name: Enhanced Builder for AMD64 architecture
+name: Microsoft Go Builder for other architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260822
+# Build 20260909
 
 on:
   workflow_dispatch:
@@ -8,18 +8,26 @@ on:
     types: [published]
   push:
     branches:
-      - builder-enhance
+      - builder-msgo
     paths:
-      - ".github/workflows/builder-enh-amd64.yml"
+      - ".github/workflows/builder-msgo-others.yml"
 jobs:
   build:
     permissions:
       contents: write
     strategy:
       matrix:
-        goos: [windows, linux, darwin, freebsd]
-        goarch: [amd64]
-        goamd64: [v1, v2, v3, v4]
+        include:
+          # BEGIN ARM64 Specified
+          - goos: darwin
+            goarch: arm64
+            goarm64: v8.6
+          - goos: windows
+            goarch: arm64
+            goarm64: v8.7
+          # END ARM64 Specified
+          - goos: linux
+            goarch: s390x
       fail-fast: false
 
     runs-on: ubuntu-latest
@@ -27,6 +35,9 @@ jobs:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
       GOAMD64: ${{ matrix.goamd64 }}
+      GOARM64: ${{ matrix.goarm64 }}
+      GORISCV64: ${{ matrix.goriscv64 }}
+      GOPPC64: ${{ matrix.goppc64 }}
       CGO_ENABLED: 0
       GOFIPS140: certified
     steps:
@@ -37,8 +48,8 @@ jobs:
 
       - name: Show workflow information
         run: |
-          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOAMD64"
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, RELEASE_NAME: $_NAME"
+          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOAMD64$GOARM64$GORISCV64$GOPPC64"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOAMD64: $GOAMD64, GOARM64: $GOARM64, GORISCV64: $GORISCV64, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go
