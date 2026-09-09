@@ -1,6 +1,6 @@
-name: Enhanced Builder for PPC64/PPC64LE architecture
+name: FIPS 140 Builder for RISCV64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260822
+# Build 20260909
 
 on:
   workflow_dispatch:
@@ -8,9 +8,9 @@ on:
     types: [published]
   push:
     branches:
-      - builder-enhance
+      - builder-fips140
     paths:
-      - ".github/workflows/builder-enh-ppc64.yml"
+      - ".github/workflows/builder-fips140-riscv64.yml"
 jobs:
   build:
     permissions:
@@ -18,19 +18,18 @@ jobs:
     strategy:
       matrix:
         goos: [windows, linux, darwin, freebsd]
-        goarch: [ppc64, ppc64le]
-        goppc64: [power8, power9, power10]
+        goarch: [riscv64]
+        goriscv64: [rva20u64, rva22u64, rva23u64]
         exclude:
           - goos: windows
           - goos: darwin
-          - goos: freebsd
       fail-fast: false
 
     runs-on: ubuntu-latest
     env:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
-      GOPPC64: ${{ matrix.goppc64 }}
+      GORISCV64: ${{ matrix.goriscv64 }}
       CGO_ENABLED: 0
       GOFIPS140: certified
     steps:
@@ -41,8 +40,8 @@ jobs:
 
       - name: Show workflow information
         run: |
-          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GOPPC64"
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOPPC64: $GOPPC64, RELEASE_NAME: $_NAME"
+          [ -n "$_NAME" ] || _NAME="$GOOS-$GOARCH$GORISCV64"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, GORISCV64: $GORISCV64, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go

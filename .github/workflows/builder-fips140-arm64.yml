@@ -1,6 +1,6 @@
-name: Enhanced Builder for ARM64 architecture
+name: FIPS 140 Builder for ARM64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20260822
+# Build 20260909
 
 on:
   workflow_dispatch:
@@ -8,9 +8,9 @@ on:
     types: [published]
   push:
     branches:
-      - builder-enhance
+      - builder-fips140
     paths:
-      - ".github/workflows/builder-enh-arm64.yml"
+      - ".github/workflows/builder-fips140-arm64.yml"
 jobs:
   build:
     permissions:
