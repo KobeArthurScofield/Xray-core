@@ -1,6 +1,6 @@
 name: Microsoft Go Builder for RISCV64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20261005
+# Build 20261009
 
 on:
   workflow_dispatch:
@@ -31,7 +31,6 @@ jobs:
       GOARCH: ${{ matrix.goarch }}
       GORISCV64: ${{ matrix.goriscv64 }}
       CGO_ENABLED: 0
-      GOFIPS140: certified
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v7
