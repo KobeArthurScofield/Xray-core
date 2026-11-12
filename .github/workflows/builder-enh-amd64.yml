@@ -1,6 +1,6 @@
 name: Enhanced Builder for AMD64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20261009
+# Build 20261111
 
 on:
   workflow_dispatch:
@@ -20,13 +20,11 @@ jobs:
         goos: [windows, linux, darwin, freebsd]
         goarch: [amd64]
         goamd64: [v2, v3, v4]
-        #exclude:
-        #  - goos: windows
-        #    goamd64: v2
-        #  - goos: darwin
-        #    goamd64: v2
-        #  - goos: darwin
-        #    goamd64: v3
+        exclude:
+          - goos: windows
+            goamd64: v2
+          - goos: darwin
+            goamd64: v2
       fail-fast: false
 
     runs-on: windows-latest
