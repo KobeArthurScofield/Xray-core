@@ -1,6 +1,6 @@
 name: Microsoft Go Builder for other architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20261009
+# Build 20261112
 
 on:
   workflow_dispatch:
@@ -26,8 +26,6 @@ jobs:
             goarch: arm64
             goarm64: v8.7
           # END ARM64 Specified
-          - goos: linux
-            goarch: s390x
       fail-fast: false
 
     runs-on: windows-latest
@@ -36,8 +34,6 @@ jobs:
       GOARCH: ${{ matrix.goarch }}
       GOAMD64: ${{ matrix.goamd64 }}
       GOARM64: ${{ matrix.goarm64 }}
-      GORISCV64: ${{ matrix.goriscv64 }}
-      GOPPC64: ${{ matrix.goppc64 }}
       CGO_ENABLED: 0
     steps:
       - name: Checkout codebase
@@ -48,8 +44,8 @@ jobs:
       - name: Show workflow information
         shell: pwsh
         run: |
-          $name = "$env:GOOS-$env:GOARCH$env:GOAMD64$env:GOARM64$env:GORISCV64$env:GOPPC64"
-          Write-Host "GOOS: $env:GOOS, GOARCH: $env:GOARCH, GOAMD64: $env:GOAMD64, GOARM64: $env:GOARM64, GORISCV64: $env:GORISCV64, GOPPC64: $env:GOPPC64, RELEASE_NAME: $name"
+          $name = "$env:GOOS-$env:GOARCH$env:GOAMD64$env:GOARM64"
+          Write-Host "GOOS: $env:GOOS, GOARCH: $env:GOARCH, GOAMD64: $env:GOAMD64, GOARM64: $env:GOARM64, RELEASE_NAME: $name"
           Add-Content -Path $env:GITHUB_ENV -Value "ASSET_NAME=$name" -Encoding utf8
 
       - name: Set up Go
