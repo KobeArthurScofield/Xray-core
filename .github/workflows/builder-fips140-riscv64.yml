@@ -1,6 +1,6 @@
 name: FIPS 140 Builder for RISCV64 architecture
 # For OS and architecture comnbinations that supported by official reposity with only tweaked changes.
-# Build 20261112
+# Build 20261113
 
 on:
   workflow_dispatch:
@@ -62,11 +62,11 @@ jobs:
           $commit = (git describe --always --dirty).Trim()
           if ($env:GOOS -eq 'windows') {
             Write-Host 'Building Xray for Windows...'
-            go build -o build_assets\xray.exe -trimpath -buildvcs=false -gcflags 'all=-l=4' -ldflags "-X github.com/xtls/xray-core/core.build=$commit -s -w -buildid=" -v .\main
-            # go build -o build_assets\wxray.exe -trimpath -buildvcs=false -gcflags 'all=-l=4' -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=$commit -s -w -buildid=" -v .\main
+            go build -o build_assets\xray.exe -trimpath -buildvcs=false -gcflags 'all=-l=4' -ldflags "-X github.com/xtls/xray-core/core.build=$commit-FIPS140-RISC-V-$env:GORISCV64 -s -w -buildid=" -v .\main
+            # go build -o build_assets\wxray.exe -trimpath -buildvcs=false -gcflags 'all=-l=4' -ldflags "-H windowsgui -X github.com/xtls/xray-core/core.build=$commit-FIPS140-RISC-V-$env:GORISCV64 -s -w -buildid=" -v .\main
           } else {
             Write-Host 'Building Xray...'
-            go build -o build_assets\xray -trimpath -buildvcs=false -gcflags 'all=-l=4' -ldflags "-X github.com/xtls/xray-core/core.build=$commit -s -w -buildid=" -v .\main
+            go build -o build_assets\xray -trimpath -buildvcs=false -gcflags 'all=-l=4' -ldflags "-X github.com/xtls/xray-core/core.build=$commit-FIPS140-RISC-V-$env:GORISCV64 -s -w -buildid=" -v .\main
           }
 
       - name: Copy README.md & LICENSE
