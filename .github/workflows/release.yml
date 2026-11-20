@@ -41,7 +41,7 @@ jobs:
               break
             fi
           done
-          LIST=('amd64' 'x86' 'arm64')
+          LIST=('amd64' 'arm64')
           for ARCHITECTURE in "${LIST[@]}"
           do
             echo -e "Checking wintun.dll for ${ARCHITECTURE}..."
@@ -238,38 +238,16 @@ jobs:
       contents: write
     strategy:
       matrix:
-        # First batch (since Go 1.29) of removal:
-        # x86: windows, linux, freebsd, openbsd
-        # arm: linux(v5), linux(v6)
-        # other: linux(mips), linux(mips64), linux(mips64le)
         # Second batch (needs discussion) of removal
         # arm(v7): freebsd, openbsd, linux
         # other: linux(mipsle)
-        goos: [windows, freebsd, openbsd, linux]
-        goarch: [arm, 386]
-        goarm: [7]
-        exclude:
-          - goos: windows
-            goarch: arm
+        goos: [freebsd, openbsd, linux]
+        goarch: [arm]
         include:
           # Second batch of removal [In the future]
           - goos: linux
             goarch: mipsle
           # END of second batch
-          # First batch of removal [Go 1.29]
-          - goos: linux
-            goarch: arm
-            goarm: 5
-          - goos: linux
-            goarch: arm
-            goarm: 6
-          - goos: linux
-            goarch: mips
-          - goos: linux
-            goarch: mips64
-          - goos: linux
-            goarch: mips64le
-          # END of first batch
       fail-fast: false
 
     runs-on: ubuntu-latest
@@ -286,14 +264,8 @@ jobs:
       - name: Show workflow information
         run: |
           _NAME=${{ matrix.patch-assetname }}
-          if [[ ${GOARCH} == 'arm' ]]; then
-            [ -n "$_NAME" ] || _NAME=$(jq ".[\"$GOOS-$GOARCH$GOARM\"].friendlyName" -r < .github/build/friendly-filenames.json)
-            echo "GOOS: $GOOS, GOARCH: $GOARCH, GOARM: $GOARM, RELEASE_NAME: $_NAME"
-          else
-            echo "GOARM=''" >> $GITHUB_ENV
-            [ -n "$_NAME" ] || _NAME=$(jq ".[\"$GOOS-$GOARCH\"].friendlyName" -r < .github/build/friendly-filenames.json)
-            echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
-          fi
+          [ -n "$_NAME" ] || _NAME=$(jq ".[\"$GOOS-$GOARCH\"].friendlyName" -r < .github/build/friendly-filenames.json)
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
 
       - name: Set up Go
@@ -308,19 +280,17 @@ jobs:
       - name: Build Xray
         run: |
           mkdir -p build_assets
+          if [[ ${GOARCH} == 'arm' ]]; then
+            GOARM="7"
+          fi
           COMMID=$(git describe --always --dirty)
-          if [[ ${GOOS} == 'windows' ]]; then
-            echo 'Building Xray for Windows...'
-            go build -o build_assets/xray.exe -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags="-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+          echo 'Building Xray...'
+          if [[ ${GOARCH} == 'mipsle' ]]; then
+            go build -o build_assets/xray -trimpath -buildvcs=false -ldflags="-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
+            echo 'Building soft-float Xray for MIPS/MIPSLE 32-bit...'
+            GOMIPS=softfloat go build -o build_assets/xray_softfloat -trimpath -buildvcs=false -ldflags="-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
           else
-            echo 'Building Xray...'
-            if [[ ${GOARCH} == 'mips' || ${GOARCH} == 'mipsle' ]]; then
-              go build -o build_assets/xray -trimpath -buildvcs=false -ldflags="-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
-              echo 'Building soft-float Xray for MIPS/MIPSLE 32-bit...'
-              GOMIPS=softfloat go build -o build_assets/xray_softfloat -trimpath -buildvcs=false -ldflags="-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
-            else
-              go build -o build_assets/xray -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags="-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
-            fi
+            go build -o build_assets/xray -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags="-X github.com/xtls/xray-core/core.build=${COMMID} -s -w -buildid=" -v ./main
           fi
 
       - name: Restore Geodat Cache
@@ -329,26 +299,9 @@ jobs:
           path: resources
           key: xray-geodat-
 
-      - name: Restore Wintun Cache
-        if: matrix.goos == 'windows'
-        uses: actions/cache/restore@v6
-        with:
-          path: resources
-          key: xray-wintun-
-
       - name: Add additional assets into package
         run: |
           mv -f resources/geo* build_assets/
-          if [[ ${GOOS} == 'windows' ]]; then
-            cp .github/build/windows/* build_assets/
-          fi
-          if [[ ${GOOS} == 'windows' ]]; then
-            echo 'Adding Wintun into packages'
-            if [[ ${GOARCH} == '386' ]]; then
-              mv resources/wintun/bin/x86/wintun.dll build_assets/
-            fi
-            mv resources/wintun/LICENSE.txt build_assets/LICENSE-Wintun
-          fi
 
       - name: Copy README.md & LICENSE
         run: |
