@@ -203,8 +203,7 @@ This distribution contains unmodified official precompiled and pre-signed Wintun
 - Component(s): wintun.dll
 - Source: https://www.wintun.net/
 - Included in:
-  - Windows x86 (windows-32, win7-32)
-  - Windows x86-64 (windows-64, win7-64)
+  - Windows x86-64 (windows-64)
   - Windows AArch64 (windows-arm64)
 - Notes: Wintun is an optional runtime-loaded component only used for TUN inbound functionality on supported Windows platforms.
 
@@ -231,7 +230,7 @@ Make sure that you are using the same Go version, and remember to set the git co
 CGO_ENABLED=0 go build -o xray -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags="-X github.com/xtls/xray-core/core.build=REPLACE -s -w -buildid=" -v ./main
 ```
 
-For Windows (x86-64 and AArch64, not win7):
+For Windows (x86-64 and AArch64):
 
 ```bash
 GOOS=windows GOARCH=amd64 GOAMD64=v2 CGO_ENABLED=0 go build -o xray.exe -trimpath -buildvcs=false -gcflags="all=-l=4" -ldflags="-X github.com/xtls/xray-core/core.build=REPLACE -s -w -buildid=" -v ./main
